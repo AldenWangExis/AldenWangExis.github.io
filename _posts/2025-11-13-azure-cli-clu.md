@@ -1,5 +1,6 @@
 ---
 title: Azure 容器化部署：ACR与Web App for Containers CLI实战精要
+description: 面向 LLM 工程师与 DevOps 架构师的 Azure Container Registry (ACR) 与 Web App for Containers 部署流程与高级配置实战。
 author: Alden
 date: 2025-11-13 17:51:00 +0800
 categories: [DevOps]
@@ -7,14 +8,10 @@ tags: [Azure, Docker]
 pin: false
 mermaid: true
 comments: true
+
 ---
 
-> 面向 LLM 工程师与 DevOps 架构师的 Azure Container Registry (ACR) 与 Web App for Containers 部署流程与高级配置实战。
-
-**文档信息**
-- 作者: Alden
-- 创建时间: 2025-11-13
-- 环境: Azure China Cloud (世纪互联)
+面向 LLM 工程师与 DevOps 架构师的 Azure Container Registry (ACR) 与 Web App for Containers 部署流程与高级配置实战。
 
 | ENV | ResourceGroup | ACR | Web App |
 |:---|:---|:---|:---|
@@ -23,7 +20,7 @@ comments: true
 
 ## 部署流程架构概览
 
-标准容器化交付流程，聚焦 Azure CLI 自动化实现。
+标准容器化交付流程，聚焦 Azure CLI 自动化实现，Azure China Cloud (世纪互联)。
 
 ```
 
