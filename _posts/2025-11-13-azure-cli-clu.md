@@ -5,6 +5,8 @@ date: 2025-11-13 17:51:00 +0800
 categories: [DevOps]
 tags: [Azure, Docker]
 pin: false
+mermaid: true
+comments: true
 ---
 
 > 面向 LLM 工程师与 DevOps 架构师的 Azure Container Registry (ACR) 与 Web App for Containers 部署流程与高级配置实战。
