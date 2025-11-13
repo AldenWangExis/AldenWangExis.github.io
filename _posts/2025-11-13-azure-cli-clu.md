@@ -1,6 +1,6 @@
 ---
 title: Azure 容器化部署：ACR与Web App for Containers CLI实战精要
-description: 面向 LLM 工程师与 DevOps 架构师的 Azure Container Registry (ACR) 与 Web App for Containers 部署流程与高级配置实战。
+description: 面向 LLM 工程师与 DevOps 架构师的 Azure Container Registry (ACR) 与 Web App for Containers 部署流程与配置实战。
 author: Alden
 date: 2025-11-13 17:51:00 +0800
 categories: [DevOps]
@@ -11,7 +11,6 @@ comments: true
 
 ---
 
-面向 LLM 工程师与 DevOps 架构师的 Azure Container Registry (ACR) 与 Web App for Containers 部署流程与高级配置实战。
 
 | ENV | ResourceGroup | ACR | Web App |
 |:---|:---|:---|:---|
@@ -194,7 +193,7 @@ az webapp restart --name chatbottest --resource-group ChatBot_DevelopTest
 
 -----
 
-## 关键概念与高阶解读
+## 关键概念与解读
 
 ### 容器注册表 ACR 身份验证模型
 
@@ -233,7 +232,7 @@ graph LR
 
 -----
 
-## 常见问题排查与高级解决方案
+## 常见问题排查与解决方案
 
 ### 故障 1：App Service 无法拉取镜像 (401 Unauthorized)
 
@@ -241,7 +240,7 @@ graph LR
 
 **根因**: Web App 缺乏从 ACR 拉取镜像的权限。
 
-#### 高级解决方案：使用系统分配的托管标识 (MSI)
+#### 解决方案：使用系统分配的托管标识 (MSI)
 
 最安全方案，避免在 App Settings 中存储静态凭证。
 
