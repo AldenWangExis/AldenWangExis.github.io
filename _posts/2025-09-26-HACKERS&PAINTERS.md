@@ -3,8 +3,8 @@ title: 黑客、语言囚徒与技术时代的共构
 description: 语言的逻辑结构决定了我们能够思考与描述的范围。
 author: Alden
 date: 2025-09-26 08:36:30 +0800
-categories: [Philosophy, Technology]
-tags: [hacker, programming, philosophy, subjectivity]
+categories: [LLM存在系列, 哲学]
+tags: [LLM, 存在主义, 书评]
 pin: false
 comments: true
 ---

@@ -3,8 +3,8 @@ title: Vibe coding：LLM 时代的"没有银弹"回响
 description: 必要的是构思概念上的结构，次要指它的实现过程。
 author: Alden
 date: 2025-09-21 21:27:22 +0800
-categories: [Philosophy, Software Engineering]
-tags: [llm, software-engineering, complexity, ai]
+categories: [LLM存在系列, 哲学]
+tags: [LLM, 存在主义, 书评, 系统学]
 pin: false
 comments: true
 ---
