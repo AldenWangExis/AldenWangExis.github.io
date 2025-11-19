@@ -11,14 +11,15 @@ mermaid: false
 comments: true
 ---
 
-> [No Priors Ep. 139 | With Snowflake CEO Sridhar Ramaswamy](https://www.youtube.com/watch?v=UIDMhKgpqkg)
+> No Priors Ep. 139 | With Snowflake CEO Sridhar Ramaswamy
+https://www.youtube.com/watch?v=UIDMhKgpqkg
 {: .prompt-info }
 
 ## 引言：拓扑倒置的必然性
 
 在LLM技术席卷企业级市场的当下，Snowflake正在经历一场深刻的系统工程重构。这场变革的核心，并非简单的产品功能叠加，而是对数据平台本体论的根本性重新定义。CEO Sridhar Ramaswamy所主导的战略转型，实质上是对**数据引力**（Data Gravity）这一物理约束的工程学响应——将计算从模型侧迁移至数据侧，构建一个内嵌推理能力的语义内核。
 
-<!-- ![图片]() -->
+![图片](https://i.postimg.cc/wBmJnb6v/Generated-Image-November-19-2025-5-02PM.png)
 
 > 这不仅是商业策略的调整，更是对企业级AI架构范式的拓扑重构。
 {: .prompt-tip }
@@ -28,7 +29,7 @@ comments: true
 ### 架构倒置的工程逻辑
 
 传统的 **Model-Centric** 范式试图将PB级数据搬运至模型API进行推理，这种对抗物理定律的架构在企业场景下已不可持续。当数据规模达到一定量级，它便表现出类似大质量天体的引力特征，吸引应用程序向其靠拢。
-<!-- ![图片]() -->
+![图片](https://i.postimg.cc/NF3L8QHR/image.png)
 
 > Snowflake的战略转型——**Bring Model to Data**——正是对这一约束的理性回应。
 {: .prompt-info }
@@ -75,13 +76,15 @@ Sridhar Ramaswamy的搜索背景（Google Search/Neeva）为Snowflake的AI战略
 - **稀疏向量（Sparse Vectors）**保留倒排索引的精确性
 - **稠密向量（Dense Vectors）**捕捉语义关联
 - **重排模型（Reranker）**引入类似PageRank的权威性评估机制
-<!-- ![图片]() -->
+
+![图片](https://i.postimg.cc/FF3v1bKv/image.png)
+
 ### 数据飞轮：从静态知识库到动态学习系统
 
 更深层的架构创新在于**Evaluation Loop（评估循环）**的建立。传统搜索引擎通过点击流数据优化排序算法，而企业级LLM应用长期缺乏类似的质量打分机制。Snowflake提出的解决方案是将用户交互反馈（对AI回答的修正、引用的点击、采纳率）回流至数仓，用于微调嵌入模型或优化检索策略。
 
 这种反馈机制构建了一个内部的**数据飞轮**：非结构化的交互数据被转化为结构化的优化信号，使得RAG效果不再受限于模型参数的静态记忆，而是随企业知识积累而线性增长。
-<!-- ![图片]() -->
+![图片](https://i.postimg.cc/JnQQddqB/image.png)
 > 这是通往垂直领域 AGI 的隐形阶梯——不是依靠更大的通用模型，而是通过持续的域内反馈实现知识进化。
 {: .prompt-tip }
 
@@ -190,7 +193,7 @@ Snowflake在Sridhar Ramaswamy领导下的演进，代表了企业级LLM架构从
 4. **底层优化**：通过SwiftKV等技术重塑经济模型
 5. **权限继承**：Agent Runtime的原生安全边界
 
-<!-- ![图片]() -->
+![图片](https://i.postimg.cc/xdfyhVsY/image.png)
 
 对于系统架构师而言，这意味着关注点必须从单纯的模型选型，转移到对**数据拓扑、检索管道及评估体系的整体设计**。在2025年的技术语境下，结构化数据与非结构化语义的深度融合，企业知识与反馈机制的持续进化，才是构建企业级智能护城河的关键所在。
 
