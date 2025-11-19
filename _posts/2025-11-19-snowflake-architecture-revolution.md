@@ -12,6 +12,7 @@ comments: true
 ---
 
 > [No Priors Ep. 139 | With Snowflake CEO Sridhar Ramaswamy](https://www.youtube.com/watch?v=UIDMhKgpqkg)
+{: .prompt-info }
 
 ## 引言：拓扑倒置的必然性
 
