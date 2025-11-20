@@ -3,7 +3,7 @@ title: Snowflake的架构革命：数据引力时代的企业级AI重构
 description: 深度解析Snowflake在LLM时代的战略转型，探讨"数据引力"驱动下的企业级AI架构范式重构，从拓扑倒置到推理经济学的系统工程革命。
 author: Alden
 date: 2025-11-19 18:11:00 +0800
-categories: [LLM, Architecture]
+categories: [LLM工程, 系统学]
 tags: [snowflake, rag]
 pin: false
 math: false
@@ -11,7 +11,7 @@ mermaid: false
 comments: true
 ---
 
-> No Priors Ep. 139 | With Snowflake CEO Sridhar Ramaswamy
+> No Priors Ep. 139 | With Snowflake CEO Sridhar Ramaswamy </br>
 https://www.youtube.com/watch?v=UIDMhKgpqkg
 {: .prompt-info }
 
