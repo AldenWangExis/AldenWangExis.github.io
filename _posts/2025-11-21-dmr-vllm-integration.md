@@ -3,14 +3,11 @@ title: 当 Docker 开始接管 LLM 部署，Ollama 的护城河还在吗？
 author: Alden
 date: 2025-11-22 22:16:00 +0800
 categories: [DevOps, LLM工程]
-tags: [Docker, vLLM, AI Infra]
+tags: [docker, vllm, ai infra]
 description: 深入解析 Docker Model Runner (DMR) 的架构演进，对比 Ollama 的工程差异，探讨 DMR 如何利用 vLLM 集成打造企业级 LLM 基础设施的运维体系。
-# pin: false
-# math: false
-# mermaid: false
-# image:
-#   path: https://mmbiz.qpic.cn/mmbiz_jpg/SsFW44YAzM8VuaNvP4dY5s1SnSwWZicsNw4KfVq4gnia8qCof1OM9EwLic93K7dKW0oHgTPraZzVTyJ9TllXVibERg/640
-#   alt: Docker Model Runner vs Ollama
+image:
+  path: https://mmbiz.qpic.cn/mmbiz_jpg/SsFW44YAzM8VuaNvP4dY5s1SnSwWZicsNw4KfVq4gnia8qCof1OM9EwLic93K7dKW0oHgTPraZzVTyJ9TllXVibERg/640
+  alt: Docker Model Runner vs Ollama
 ---
 
 随着 vLLM 后端的原生集成，**Docker Model Runner (DMR)** 正式完成从实验特性到生产组件的蜕变。本文将初步介绍其架构演进，对比 Ollama 的工程差异，探讨 DMR 如何以标准化、确定性的理念，打造企业级 LLM 基础设施的运维体系。
@@ -22,7 +19,7 @@ description: 深入解析 Docker Model Runner (DMR) 的架构演进，对比 Oll
 
 DMR 随 Docker Desktop 推出时，仅支持 GGUF 格式，本质上是 llama.cpp 的容器化封装。外界普遍将其视为 Ollama 的“容器化模仿者”。这在当时看来，更多是 Docker 试图在本地 LLM 开发流中占据一席之地的尝试，功能上与 Ollama 高度重叠。
 
-然而，2025 年 11 月 19 日的更新引入了对 **vLLM** 后端及 **.safetensors** 格式的原生支持。这一变动改变了 DMR 的性质——它不再仅仅是一个“方便开发者在本地跑模型”的工具，而是具备了接入高吞吐、低延迟生产环境的能力。 
+然而，2025 年 11 月 19 日的更新引入了对 **vLLM** 后端及 `.safetensors`{: .filepath} 格式的原生支持。这一变动改变了 DMR 的性质——它不再仅仅是一个“方便开发者在本地跑模型”的工具，而是具备了接入高吞吐、低延迟生产环境的能力。 
 
 对于习惯了 Kubernetes 和标准化交付的运维团队而言，这是一个极为舒适的信号：这意味着模型推理终于可以被纳入现有的容器规范中，而非作为一种需要单独维护的“特殊进程”独立存在，**大大降低了异构工作负载带来的运维认知负担**。
 
@@ -33,14 +30,14 @@ DMR 目前的核心逻辑在于根据模型权重的格式，自动路由到底�
 
 ### 1.1 开发侧：GGUF 与 llama.cpp
 
-当 DMR 识别到 OCI Artifact 为 `.gguf` 格式时，它会调用 `llama.cpp` 后端。
+当 DMR 识别到 OCI Artifact 为 `.gguf`{: .filepath} 格式时，它会调用 `llama.cpp` 后端。
 
 *   **场景**：本地调试、Apple Silicon 设备、显存受限环境。
 *   **特性**：低冷启动时间，对硬件兼容性极好。
 
 ### 1.2 生产侧：Safetensors 与 vLLM
 
-这是本次更新的核心。当拉取模型权重是 `.safetensors` 的模型时，DMR 会调用 vLLM 引擎。
+这是本次更新的核心。当拉取模型权重是 `.safetensors`{: .filepath} 的模型时，DMR 会调用 vLLM 引擎。
 
 *   **技术红利**：原生获得了 PagedAttention、Continuous Batching（连续批处理）以及 Tensor Parallelism（张量并行）的能力。
 *   **运维视角**：这一层抽象使得基础设施工程师无需深入钻研 vLLM 复杂的 Python 依赖环境配置，直接获得了一个经过厂商验证的、支持高并发的标准推理单元，减少了因环境依赖冲突导致的“生产环境无法启动”事故。
@@ -67,7 +64,7 @@ DMR 沿用了 Docker 镜像的不可变基础设施理念。
 > 这点对于 SRE 至关重要：它消除了因环境差异导致的“幻觉”概率波动，让故障排查回归到确定的配置版本上。
 {: .prompt-info }
 
-![Docker AI Hub](https://mmbiz.qpic.cn/mmbiz_jpg/SsFW44YAzM8VuaNvP4dY5s1SnSwWZicsN1PO4uicuYOTO1L3iaWQLTwKN4pk2Eb9eQ44QWjVpoCsiaibfUTZa3xBAhA/640)
+![Docker AI Hub](https://mmbiz.qpic.cn/mmbiz_jpg/SsFW44YAzM8VuaNvP4dY5s1SnSwWZicsN1PO4uicuYOTO1L3iaWQLTwKN4pk2Eb9eQ44QWjVpoCsiaibfUTZa3xBAhA/640){: .shadow }
 
 ### 2.2 基础设施即代码 (IaC) 的集成度
 
@@ -95,6 +92,7 @@ models:
     runtime_flags:                     # 显式控制推理参数
       - "--gpu-memory-utilization 0.9"
 ```
+{: file="docker-compose.yml" }
 
 这种架构上的升维，使得模型服务可以像 Redis、PostgreSQL 一样被版本控制、审查和回滚。对于已经建立起 GitOps 流程（如使用 ArgoCD）的团队，DMR 几乎是零成本接入，无需编写额外的 Operator 或复杂的初始化脚本。
 
