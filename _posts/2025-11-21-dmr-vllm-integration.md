@@ -5,12 +5,12 @@ date: 2025-11-22 22:16:00 +0800
 categories: [DevOps, LLM工程]
 tags: [Docker, vLLM, AI Infra]
 description: 深入解析 Docker Model Runner (DMR) 的架构演进，对比 Ollama 的工程差异，探讨 DMR 如何利用 vLLM 集成打造企业级 LLM 基础设施的运维体系。
-pin: false
-math: false
-mermaid: false
-image:
-  path: https://mmbiz.qpic.cn/mmbiz_jpg/SsFW44YAzM8VuaNvP4dY5s1SnSwWZicsNw4KfVq4gnia8qCof1OM9EwLic93K7dKW0oHgTPraZzVTyJ9TllXVibERg/640
-  alt: Docker Model Runner vs Ollama
+# pin: false
+# math: false
+# mermaid: false
+# image:
+#   path: https://mmbiz.qpic.cn/mmbiz_jpg/SsFW44YAzM8VuaNvP4dY5s1SnSwWZicsNw4KfVq4gnia8qCof1OM9EwLic93K7dKW0oHgTPraZzVTyJ9TllXVibERg/640
+#   alt: Docker Model Runner vs Ollama
 ---
 
 随着 vLLM 后端的原生集成，**Docker Model Runner (DMR)** 正式完成从实验特性到生产组件的蜕变。本文将初步介绍其架构演进，对比 Ollama 的工程差异，探讨 DMR 如何以标准化、确定性的理念，打造企业级 LLM 基础设施的运维体系。
