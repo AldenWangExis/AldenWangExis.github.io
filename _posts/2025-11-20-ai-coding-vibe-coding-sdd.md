@@ -1,5 +1,6 @@
 ---
 title: AI for Coding：从 Vibe Coding 到规范驱动开发
+author: Alden
 date: 2025-11-20 12:00:00 +0900
 categories: [LLM工程, 系统学]
 tags: [LLM, SDD, methodology]
