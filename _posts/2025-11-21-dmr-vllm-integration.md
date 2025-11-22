@@ -18,8 +18,6 @@ image:
 > 下期预告：我们将详细介绍如何使用 DMR 进行模型本地部署。
 {: .prompt-tip }
 
-<!-- ![图片](https://mmbiz.qpic.cn/mmbiz_jpg/SsFW44YAzM8VuaNvP4dY5s1SnSwWZicsNw4KfVq4gnia8qCof1OM9EwLic93K7dKW0oHgTPraZzVTyJ9TllXVibERg/640) -->
-
 ## 背景：从实验特性到生产组件
 
 DMR 随 Docker Desktop 推出时，仅支持 GGUF 格式，本质上是 llama.cpp 的容器化封装。外界普遍将其视为 Ollama 的“容器化模仿者”。这在当时看来，更多是 Docker 试图在本地 LLM 开发流中占据一席之地的尝试，功能上与 Ollama 高度重叠。
@@ -97,8 +95,6 @@ models:
     runtime_flags:                     # 显式控制推理参数
       - "--gpu-memory-utilization 0.9"
 ```
-
-<!-- {: file="docker-compose.yml" } -->
 
 这种架构上的升维，使得模型服务可以像 Redis、PostgreSQL 一样被版本控制、审查和回滚。对于已经建立起 GitOps 流程（如使用 ArgoCD）的团队，DMR 几乎是零成本接入，无需编写额外的 Operator 或复杂的初始化脚本。
 
