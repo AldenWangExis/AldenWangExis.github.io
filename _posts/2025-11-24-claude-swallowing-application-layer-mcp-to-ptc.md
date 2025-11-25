@@ -20,9 +20,11 @@ image:
 > 今天看到 *@五道口纳什* 同学在群里分享了 Anthropic 最新发布的3个实验feature，读罢深受启发。在我看来，Anthropic 这家公司可以称之为 **“在有技术的公司中是野心最大的、在商业公司当中是技术最强的”**。
 {: .prompt-tip }
 
-回顾自 2024 年 11 月 25 日至 2025 年 11 月 24 日这整整一年，，Anthropic 在 LLM 基础设施层面的布局呈现出极强的工程理性主义特征。通过 **Model Context Protocol (MCP)**、**Agent Skills** 与 **Programmatic Tool Calling (PTC)** 三步棋，Anthropic 逐步完成了一场静悄悄的架构革命。这不仅仅是功能的叠加，而是对“模型—环境”交互协议的标准化重塑。
+回顾自 2024 年 11 月 25 日至 2025 年 11 月 24 日这整整一年，Anthropic 在 LLM 基础设施层面的布局呈现出极强的工程理性主义特征。通过 **Model Context Protocol (MCP)**、**Agent Skills** 与 **Programmatic Tool Calling (PTC)** 三步棋，Anthropic 逐步完成了一场静悄悄的架构革命。这不仅仅是功能的叠加，而是对“模型—环境”交互协议的标准化重塑。
 
 一言以蔽之，这一年的核心演进趋势是：**从基于文本的隐式“提示工程” (Prompting Engineering)，转向基于协议的显式“环境工程” (Environment Engineering)。**将模型从单纯的对话者，重构为具备标准化 I/O、按需加载能力与逻辑执行沙箱的智能内核。
+
+[![image.png](https://i.postimg.cc/g08GZsPw/image.png)]\n柒哥在7月份前瞻性地提出 Environmental Rngineering 的概念
 
 ## 对比总览
 
@@ -35,8 +37,6 @@ image:
 | **LLM 自主性** | **中**：模型决定何时调用工具或读取资源，但依赖 Client 提供的静态列表。 | **高**：模型根据任务目标，自主决定检索并“学习”哪些具体技能手册。 | **极高**：模型编写完整逻辑脚本，自主编排控制流 (Loop/If)，而非依赖外部驱动。 |
 | **工程师控制权** | **数据接入层**：控制数据暴露的边界与权限。 | **知识定义层**：控制 SOP 的颗粒度与层次结构。 | **执行环境层**：控制代码沙箱的依赖库、算力限制与安全围栏。 |
 | **系统熵值** | **降低**：通过标准化协议减少了定制化 API 胶水代码的混乱。 | **降低**：通过渐进式披露减少了上下文窗口中的噪声干扰。 | **最低**：通过确定性代码执行替代了概率性多轮对话，极大降低了执行路径的不确定性。 |
-
----
 
 ## 核心技术演进详解
 
@@ -60,15 +60,13 @@ MCP 基于 JSON-RPC 协议定义了三种原语：
 工程师只需构建一个 MCP Server，任何支持该协议的客户端（如 Claude Desktop, IDEs）即可即插即用。
 
 #### 场景与效果
-典型场景如本地开发环境连接，工程师可直接通过 MCP 连接本地 SQLite 和 Git。这极大地降低了集成的边际成本，将“上下文获取”变成了标准化的基础设施服务。例如，一个 `git-mcp-server` 暴露读取仓库和创建分支的能力，用户授权后，Claude 即可直接读取状态并修复代码，无需手动复制粘贴。
-
----
+典型场景如本地开发环境连接，工程师可直接通过 MCP 连接本地 Postgresql 和 Git。这极大地降低了集成的边际成本，将“上下文获取”变成了标准化的基础设施服务。例如，一个 `git-mcp-server` 暴露读取仓库和创建分支的能力，用户授权后，Claude 即可直接读取状态并修复代码，无需手动复制粘贴。
 
 ### 2. Agent Skills: 动态能力的渐进式披露
 
 **发布时间**：2025年10月16日
 
-其设计哲学是 **Progressive Disclosure & Composability (渐进式披露与组合性)**，核心在于从“单体大模型”向“模块化认知工程”转型。在 OS 层面，这完美对应了 **Header Files / Dynamic Linking (.h / .so)**——Agent 启动时仅加载轻量级的元数据（如同编译器读取头文件），仅在运行时根据任务调用栈的需求，动态加载具体的技能包（如同按需加载动态链接库）。
+Agent Skills 的设计哲学是 **Progressive Disclosure & Composability (渐进式披露与组合性)**，核心在于从“单体大模型”向“模块化认知工程”转型。在 OS 层面，这完美对应了 **Header Files / Dynamic Linking (.h / .so)**——Agent 启动时仅加载轻量级的元数据（如同编译器读取头文件），仅在运行时根据任务调用栈的需求，动态加载具体的技能包（如同按需加载动态链接库）。
 
 ![Agent Skills 架构图](https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2Fddd7e6e572ad0b6a943cacefe957248455f6d522-1650x929.jpg&w=1920&q=75){: .shadow .rounded w="100%" }
 
@@ -106,13 +104,11 @@ for page in reader.pages:
 #### 场景与效果
 典型场景如复杂的企业表单填写或遗留代码重构。它实现了 **Effectively Unbounded Context (有效无限上下文)**——理论上可以挂载 TB 级的知识库，因为模型只在运行时“取一瓢饮”。例如，一个“税务申报 Agent”平时占用极低内存，只有在处理特定表格时，才会动态加载对应的 `forms.md` 规范和 `extract.py` 脚本，瞬间从通用模型切换为领域专家，且大幅降低了推理成本。
 
----
-
 ### 3. PTC (Programmatic Tool Calling): 代码即推理
 
 **发布时间**：2025年11月24日
 
-设计哲学是 **Compute over Context & Coding as Reasoning**，实现了“概率”与“逻辑”的正交分离。在 OS 层面，这类似于 **Shell Scripting / Kernel Execution**——模型不再是呆板地发送单个 API 请求，而是编写完整脚本提交给内核批量执行。搭配同时发布的 **Tool Search Tool, Tool Use Examples** 一起使用，Anthropic 称可将工具调用的 token 消耗减少70%-90%。
+PTC 设计哲学是 **Compute over Context & Coding as Reasoning**，实现了“概率”与“逻辑”的正交分离。在 OS 层面，这类似于 **Shell Scripting / Kernel Execution**——模型不再是呆板地发送单个 API 请求，而是编写完整脚本提交给内核批量执行。搭配同时发布的 **Tool Search Tool, Tool Use Examples** 一起使用，Anthropic 称可将工具调用的 token 消耗减少70%-90%。
 
 ![PTC 架构图](https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2F65737d69a3290ed5c1f3c3b8dc873645a9dcc2eb-1999x1491.png&w=2048&q=75){: .shadow .rounded w="100%" }
 
@@ -151,8 +147,6 @@ expenses = await asyncio.gather(*[
 
 > 例如，“找出素数并求和”的任务，传统方式需请求 100 次工具，而 PTC 方式下模型只需编写一行 `sum([n for n in numbers if is_prime(n)])` 即可直接获得结果。
 {: .prompt-info }
-
----
 
 ## 对 LLM 工程师与系统工程的影响
 
@@ -193,7 +187,6 @@ Anthropic 的这一系列动作揭示了一个明显的趋势：**Model Provider
 
 未来的 LLM 工程师，本质上是在为概率性的智能体构建一个确定性的、可观测的、安全的**数字空间**。
 
----
 
 ## 参考资料
 
