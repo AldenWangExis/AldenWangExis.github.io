@@ -14,9 +14,6 @@ image:
   alt: Claude Developer Platform
 ---
 
-# 从 MCP 到 PTC：LLM 交互范式的工业化演进与系统重构
-
-
 > 今天看到 *@五道口纳什* 同学在群里分享了 Anthropic 最新发布的3个实验feature，读罢深受启发。在我看来，Anthropic 这家公司可以称之为 **“在有技术的公司中是野心最大的、在商业公司当中是技术最强的”**。
 {: .prompt-tip }
 
