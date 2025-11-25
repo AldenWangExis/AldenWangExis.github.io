@@ -9,6 +9,9 @@ toc: true
 pin: false
 math: true
 mermaid: true
+image:
+  path: https://i.postimg.cc/155rtY1Y/image.png
+  alt: Claude Developer Platform
 ---
 
 # 从 MCP 到 PTC：LLM 交互范式的工业化演进与系统重构
@@ -43,7 +46,7 @@ mermaid: true
 
 其设计哲学是 **Standardization & Decoupling (标准化与解耦)**，核心在于将“模型”与“数据源”彻底解耦，建立通用的 Client-Host-Server 架构。这在 OS 层面类似于 **Device Drivers / File System**——如同操作系统通过统一驱动挂载硬件，MCP 让 LLM 通过统一协议“挂载”数据资源。
 
-![MCP 架构图](https://mmbiz.qpic.cn/mmbiz_png/ZBjVrHIdkOn8ya2Aee27MN833ftWp1icEmRCWuDRzkHCwK2bjvKa1jHxvcLToEhomicVjBcOHVicXMLibQAlMGPDbA/640?wx_fmt=png&from=appmsg&wxfrom=5&wx_lazy=1&tp=webp#imgIndex=1){: .shadow .rounded w="100%" }
+![MCP 架构图](https://mmbiz.qpic.cn/mmbiz_png/ZBjVrHIdkOn8ya2Aee27MN833ftWp1icEmRCWuDRzkHCwK2bjvKa1jHxvcLToEhomicVjBcOHVicXMLibQAlMGPDbA/640){: .shadow .rounded w="100%" }
 
 #### 问题与背景
 在 MCP 之前，连接 GitHub、Slack 或数据库需要为每个 AI 应用编写特定的 Connector，导致严重的碎片化和重复造轮子。核心痛点在于缺乏统一的“上下文协议”。
