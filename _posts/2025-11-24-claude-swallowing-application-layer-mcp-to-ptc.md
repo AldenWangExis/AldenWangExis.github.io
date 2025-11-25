@@ -1,8 +1,8 @@
 ---
 title: 被 Claude 折叠的应用层：从 MCP、Skills 到 PTC 的夸维度打击
-description: 深度解析 Anthropic 在 LLM 基础设施层的三步棋——MCP、Agent Skills 与 Programmatic Tool Calling，如何将模型从单纯的对话者重构为具备标准化 I/O 和执行沙箱的智能内核。
+description: 深度解析 Anthropic 在 LLM 基础设施层的三步棋——MCP、Agent Skills 与 Programmatic Tool Calling，如何将模型从单纯的对话者重构具有环境感知能力的智能应用系统（LLMOps）
 author: Alden
-date: 2025-11-24 10:00:00 +0800
+date: 2025-11-25 20:18:00 +0800
 categories: [LLM工程]
 tags: [Anthropic, Claude, MCP, Agent]
 toc: true
@@ -20,11 +20,11 @@ image:
 > 今天看到 *@五道口纳什* 同学在群里分享了 Anthropic 最新发布的3个实验feature，读罢深受启发。在我看来，Anthropic 这家公司可以称之为 **“在有技术的公司中是野心最大的、在商业公司当中是技术最强的”**。
 {: .prompt-tip }
 
-回顾自 2024 年 11 月 25 日至 2025 年 11 月 24 日这整整一年，Anthropic 在 LLM 基础设施层面的布局呈现出极强的工程理性主义特征。通过 **Model Context Protocol (MCP)**、**Agent Skills** 与 **Programmatic Tool Calling (PTC)** 三步棋，Anthropic 逐步完成了一场静悄悄的架构革命。这不仅仅是功能的叠加，而是对“模型—环境”交互协议的标准化重塑。
+回顾自 2024 年 11 月 25 日至 2025 年 11 月 24 日这整整一年，Anthropic 在 LLM 基础设施层面的布局呈现出极强的工程理性主义特征。除了当下最强模型 Claude Opus 4.5，Anthropic 通过 **Model Context Protocol (MCP)**、**Agent Skills** 与 **Programmatic Tool Calling (PTC)** 逐步完成了一场静悄悄的架构革命。这不仅仅是功能的叠加，而是对“模型—环境”交互协议的标准化重塑。
 
 一言以蔽之，这一年的核心演进趋势是：**从基于文本的隐式“提示工程” (Prompting Engineering)，转向基于协议的显式“环境工程” (Environment Engineering)。**将模型从单纯的对话者，重构为具备标准化 I/O、按需加载能力与逻辑执行沙箱的智能内核。
 
-[![image.png](https://i.postimg.cc/g08GZsPw/image.png)]\n柒哥在7月份前瞻性地提出 Environmental Rngineering 的概念
+[![image.png](https://i.postimg.cc/g08GZsPw/image.png)]\n_柒哥在7月份前瞻性地提出 Environmental Rngineering 的概念_
 
 ## 对比总览
 
