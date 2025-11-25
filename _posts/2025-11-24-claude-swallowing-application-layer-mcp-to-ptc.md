@@ -24,7 +24,7 @@ image:
 
 一言以蔽之，这一年的核心演进趋势是：**从基于文本的隐式“提示工程” (Prompting Engineering)，转向基于协议的显式“环境工程” (Environment Engineering)。**将模型从单纯的对话者，重构为具备标准化 I/O、按需加载能力与逻辑执行沙箱的智能内核。
 
-[![image.png](https://i.postimg.cc/g08GZsPw/image.png)]\n_柒哥在7月份前瞻性地提出 Environmental Rngineering 的概念_
+![image.png](https://i.postimg.cc/g08GZsPw/image.png)\n_柒哥在7月份前瞻性地提出 Environmental Rngineering 的概念_
 
 ## 对比总览
 
