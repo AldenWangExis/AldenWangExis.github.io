@@ -2,7 +2,7 @@
 title: Vercel 国内加速指南：腾讯云 EdgeOne 低成本方案
 description: 解决 Vercel 在中国大陆访问慢、SSL 握手失败等问题，利用腾讯云 EdgeOne 个人免费版实现低成本、高性能的边缘加速。
 author: Alden
-date: 2025-01-01 10:00:00 +0800
+date: 2025-12-01 18:34:29 +0800
 categories: [DevOps]
 tags: [vercel, edgeone, cdn, web]
 pin: false
