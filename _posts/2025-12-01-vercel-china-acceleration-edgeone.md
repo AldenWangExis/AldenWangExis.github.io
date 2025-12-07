@@ -4,10 +4,11 @@ description: 解决 Vercel 在中国大陆访问慢、SSL 握手失败等问题�
 author: Alden
 date: 2025-01-01 10:00:00 +0800
 categories: [DevOps]
-tags: [Vercel, EdgeOne, CDN, Web]
+tags: [vercel, edgeone, cdn, web]
 pin: false
 math: false
 mermaid: true
+comments: true
 ---
 
 ## 1. 背景与问题分析
@@ -16,7 +17,7 @@ mermaid: true
 
 对于前端开发者而言，Vercel 是部署 Next.js/Vue 等静态或 Serverless 站点的首选平台。然而，在中国大陆地区，Vercel 面临着严重的访问体验问题：
 
-*   **网络阻断与高延迟**：Vercel 官方提供的 Anycast IP（如 `76.76.21.21`）及默认域名 `cname-china.vercel-dns.com` 在国内的连通性逐年下降，常出现丢包、重置（RST）或高达 300ms+ 的延迟。
+*   **网络阻断与高延迟**：Vercel 官方提供的 Anycast IP（如 `76.76.21.21`）及默认域名 `cname-china.vercel-dns.com`{: .filepath} 在国内的连通性逐年下降，常出现丢包、重置（RST）或高达 300ms+ 的延迟。
 *   **SSL 握手失败**：由于网络干扰，HTTPS 握手阶段经常超时。
 
 ### 1.2 需求目标
@@ -65,7 +66,7 @@ graph LR
 
 *   **推荐后缀**：`.top` / `.xyz` / `.club` / `.site`
 *   **成本**：首年通常仅需 **6 - 15 CNY**。
-*   **实名认证**：根据《互联网域名管理办法》，在大陆注册商购买域名必须创建“信息模板”并完成实名认证（上传身份证），否则域名会处于 `ServerHold` 状态无法解析。
+*   **实名认证**：根据《互联网域名管理办法》，在大陆注册商购买域名必须创建"信息模板"并完成实名认证（上传身份证），否则域名会处于 `ServerHold`{: .filepath} 状态无法解析。
 
 > **实战案例**：在本教程中，我们以购买阿里云的 `.club` 域名为例，年费仅约 10 元。
 {: .prompt-info }
@@ -91,10 +92,10 @@ graph LR
 | :--- | :--- | :--- |
 | **加速域名** | `www` (或 `@`) | 定义用户访问的入口，如 `www.happytest.club`。 |
 | **源站类型** | **域名 (Domain)** | |
-| **源站地址** | `your-project.vercel.app` | **不要填 IP**。Vercel 的 Anycast IP 会动态变化，填域名利用 DNS 动态解析更稳。 |
+| **源站地址** | `your-project.vercel.app`{: .filepath} | **不要填 IP**。Vercel 的 Anycast IP 会动态变化，填域名利用 DNS 动态解析更稳。 |
 | **回源协议** | **HTTPS** | Vercel 强制要求 HTTPS 连接，HTTP 会导致 308 重定向循环或错误。 |
 | **回源端口** | `443` | 配合 HTTPS 协议。 |
-| **回源 HOST** | **自定义 (Custom)** <br> `your-project.vercel.app` | **⚠️ 最关键配置**。<br>Vercel 的网关是基于 Host 头分发请求的。如果透传 `www.happytest.club`，Vercel 不识别该域名（除非你在 Vercel 侧也绑定了该域名），必须重写为 Vercel 分配的二级域名。 |
+| **回源 HOST** | **自定义 (Custom)** <br> `your-project.vercel.app`{: .filepath} | **⚠️ 最关键配置**。<br>Vercel 的网关是基于 Host 头分发请求的。如果透传 `www.happytest.club`{: .filepath}，Vercel 不识别该域名（除非你在 Vercel 侧也绑定了该域名），必须重写为 Vercel 分配的二级域名。 |
 
 ### 4.3 验证方式选择
 
@@ -106,7 +107,7 @@ EdgeOne 提供三种验证域名权属的方式，推荐选择 **“自动验证
 
 ## 5. DNS 解析与流量切换
 
-配置完成后，EdgeOne 会生成一个 CNAME 目标地址，格式通常为 `*.eo.dnse5.com` 或 `*.eo.dnsv1.com`。
+配置完成后，EdgeOne 会生成一个 CNAME 目标地址，格式通常为 `*.eo.dnse5.com`{: .filepath} 或 `*.eo.dnsv1.com`{: .filepath}。
 
 ### 5.1 配置 CNAME
 
@@ -129,7 +130,7 @@ nslookup www.happytest.club
 
 **预期输出**：
 
-```text
+```console
 Non-authoritative answer:
 Name:    www.happytest.club.eo.dnse5.com  <-- 看到这个别名，说明 CNAME 已接管
 Address: 43.174.xxx.xxx                <-- EdgeOne 的边缘节点 IP
@@ -163,7 +164,7 @@ Aliases: www.happytest.club
 
 相比直连 Vercel 的高丢包率，经过 EdgeOne 加速后的网络表现通常如下：
 
-```bash
+```console
 ping www.happytest.club
 # 典型结果：
 # 往返时间：最短 = 94ms，最长 = 117ms，平均 = 108ms
@@ -176,9 +177,9 @@ ping www.happytest.club
 
 | 现象 | 可能原因 | 解决方案 |
 | :--- | :--- | :--- |
-| **浏览器报 404 / 502** | 回源 Host 配置错误 | 检查 EdgeOne 源站配置，确认 **回源 Host** 选的是“自定义”且填入了 `xxx.vercel.app`。 |
+| **浏览器报 404 / 502** | 回源 Host 配置错误 | 检查 EdgeOne 源站配置，确认 **回源 Host** 选的是"自定义"且填入了 `xxx.vercel.app`{: .filepath}。 |
 | **浏览器报 SSL_ERROR...** | 证书未就绪 | DNS 刚生效，证书正在签发中。**等待 15 分钟**后再试。 |
-| **Ping 通但无法访问** | 浏览器缓存 | Chrome 开启无痕模式测试，或运行 `ipconfig /flushdns`。 |
+| **Ping 通但无法访问** | 浏览器缓存 | Chrome 开启无痕模式测试，或在终端运行清除 DNS 缓存命令。 |
 | **阿里云提示解析冲突** | 存在同名记录 | 删除该域名下原有的 A 记录或 CNAME 记录（如阿里云默认的停车页）。 |
 
 ---

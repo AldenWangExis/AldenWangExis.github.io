@@ -1,5 +1,5 @@
 ---
-title: 绕过前端UI：直接调用 Inkeep AI 问答服务的技术实现
+title: Inkeep AI 文档服务的协议分析与程序化调用
 description: 记录在服务器环境下，通过纯 HTTP 方式直接调用 Inkeep AI 服务的完整技术实现过程，包括 PoW 机制破解、SSE 流式响应处理等核心技术细节。
 author: Alden
 date: 2025-12-07 14:30:00 +0800
@@ -41,8 +41,8 @@ Inkeep 采用典型的微服务架构，将数据持久化与推理解耦：
 
 ```mermaid
 graph LR
-    A[客户端] --> B[/conversations API]
-    A --> C[/chat/completions API]
+    A[客户端] --> B["/conversations API"]
+    A --> C["/chat/completions API"]
     B --> D[对话元数据存储]
     C --> E[LLM 推理引擎]
     E --> F[向量检索 + RAG]
@@ -80,10 +80,10 @@ sequenceDiagram
 {
   "number": 6170,
   "algorithm": "SHA-256",
-  "challenge": "efc06778eda01a9e88db1a24f8b0dffa66fd0cca8f41c2e7582f77c4d9962a12",
+  "challenge": "efc0**********2a12",
   "maxnumber": 50000,
-  "salt": "05272189d79b12f6eea1a3a2?expires=1764951018",
-  "signature": "5faf20765c846d5ef0e7f699568691dcd4ad31f4baace881e4c40be70fe07bd8"
+  "salt": "0527**********1018",
+  "signature": "5faf**********7bd8"
 }
 ```
 
@@ -98,7 +98,7 @@ sequenceDiagram
 | `api.io.inkeep.com/conversations` | POST | 创建/记录对话 | HTTP 200，但 messages 字段为空 |
 | `api.inkeep.com/v1/chat/completions` | POST | LLM 推理端点 | SSE 流式响应 |
 
-两者共用同一 Bearer Token：`9667d51abc489145d702408944116c2620bbb6b2716994b7`
+两者共用同一 Bearer Token：`9667**********94b7`
 
 > 该 Token 为公开的集成 Token（嵌入前端 JavaScript），非用户级鉴权。这是集成类服务的典型特征，安全性依赖其他防护手段（如 PoW）。
 {: .prompt-info }
@@ -107,9 +107,9 @@ sequenceDiagram
 
 直接请求 `/v1/chat/completions` 端点时，返回 **403 Forbidden** 错误。对比浏览器抓包数据，发现关键差异：
 
-```http
-Authorization: Bearer 9667d51abc489145d702408944116c2620bbb6b2716994b7
-x-inkeep-challenge-solution: eyJudW1iZXIiOjYxNzAsImFsZ29yaXRobSI6IlNIQS0yNTYiLCAuLi59
+```plaintext
+Authorization: Bearer 9667**********94b7
+x-inkeep-challenge-solution: eyJu**********Li59
 ```
 
 缺失的 `x-inkeep-challenge-solution` 请求头正是 PoW 验证的关键。
@@ -120,7 +120,7 @@ x-inkeep-challenge-solution: eyJudW1iZXIiOjYxNzAsImFsZ29yaXRobSI6IlNIQS0yNTYiLCA
 
 ```bash
 GET https://api.inkeep.com/v1/challenge
-Authorization: Bearer 9667d51abc489145d702408944116c2620bbb6b2716994b7
+Authorization: Bearer 9667**********94b7
 ```
 
 返回示例：
@@ -128,10 +128,10 @@ Authorization: Bearer 9667d51abc489145d702408944116c2620bbb6b2716994b7
 ```json
 {
   "algorithm": "SHA-256",
-  "challenge": "13fa4ce5ef1aadfa6ce88bb8cffc394a45c4351270df485ff2ccfc20b2170ea2",
-  "maxnumber": 50000,
-  "salt": "570f3dfcacab625c99489619?expires=1764952339",
-  "signature": "09fe496314dcbd775a390805bea99f00bdb5f4ca276be40dffbda30dc4c91315"
+  "challenge": "13fa**********0ea2",
+  "maxnumber": 5000000,
+  "salt": "570f**********2339",
+  "signature": "09fe**********1315"
 }
 ```
 
