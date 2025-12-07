@@ -4,7 +4,7 @@ description: 解决 Vercel 在中国大陆访问慢、SSL 握手失败等问题�
 author: Alden
 date: 2025-12-01 18:34:29 +0800
 categories: [DevOps]
-tags: [vercel, edgeone, cdn, web]
+tags: [Vercel, CDN, EdgeOne]
 pin: false
 math: false
 mermaid: true

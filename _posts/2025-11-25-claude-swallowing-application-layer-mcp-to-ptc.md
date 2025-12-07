@@ -3,8 +3,8 @@ title: 被 Claude 折叠的应用层：从 MCP、Skills 到 PTC 的夸维度打�
 description: 深度解析 Anthropic 在 LLM 基础设施层的三步棋——MCP、Agent Skills 与 Programmatic Tool Calling，如何将模型从单纯的对话者重构具有环境感知能力的智能应用系统（LLMOps）
 author: Alden
 date: 2025-11-25 20:18:00 +0800
-categories: [LLM工程]
-tags: [Anthropic, Claude, MCP, Agent]
+categories: [LLM Engineering]
+tags: [Agent, MCP, Anthropic]
 toc: true
 pin: false
 math: true

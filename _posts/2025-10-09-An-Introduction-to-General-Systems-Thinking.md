@@ -3,8 +3,8 @@ title: LLM重塑系统边界：二阶序与认知工具的知识平权
 description: 经验世界的秩序本身也有秩序，也许可以称为二阶序。
 author: Alden
 date: 2025-10-09 08:19:00 +0800
-categories: [LLM存在系列, 系统学]
-tags: [LLM, 存在主义, 书评]
+categories: [System Cognition]
+tags: [Philosophy, Complexity, Book Review]
 pin: false
 mermaid: false
 comments: true

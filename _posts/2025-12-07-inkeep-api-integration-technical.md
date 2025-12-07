@@ -3,8 +3,8 @@ title: Inkeep AI 文档服务的协议分析与程序化调用
 description: 记录在服务器环境下，通过纯 HTTP 方式直接调用 Inkeep AI 服务的完整技术实现过程，包括 PoW 机制破解、SSE 流式响应处理等核心技术细节。
 author: Alden
 date: 2025-12-07 14:30:00 +0800
-categories: [技术实践, API逆向]
-tags: [python, api, inkeep, pow, sse, reverse-engineering]
+categories: [Coding Lab]
+tags: [Reverse Engineering, Python, API, Crawler]
 pin: false
 mermaid: true
 comments: true

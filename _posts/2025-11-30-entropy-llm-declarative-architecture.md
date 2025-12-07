@@ -2,8 +2,8 @@
 title: 熵增、刘慈欣与 LLM：声明式架构是对抗混乱的唯一解吗？
 date: 2025-11-30 21:56:12 +0800
 author: Alden
-categories: [LLM Engineering, Architecture]
-tags: [LLM, DevOps, Philosophy, Declarative Programming, Vibe Coding]
+categories: [System Cognition]
+tags: [Architecture, Entropy, Declarative, Philosophy, AI Coding]
 pin: false
 math: true
 mermaid: false

@@ -3,8 +3,8 @@ title: 跨域的结构同构性
 description: 在看似无关的领域间建立深刻的理解桥梁，避免被纯粹的技术效率所框架。
 author: Alden
 date: 2025-09-14 14:05:02 +0800
-categories: [LLM存在系列, 哲学]
-tags: [LLM, 存在主义, 书评]
+categories: [System Cognition]
+tags: [Cognition, Structure, Philosophy, Book Review]
 pin: false
 comments: true
 ---
