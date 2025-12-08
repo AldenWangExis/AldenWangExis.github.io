@@ -2,7 +2,7 @@
 title: AI Coding：从 Vibe Coding 到规范驱动开发
 author: Alden
 date: 2025-11-20 12:00:00 +0900
-categories: [LLM Engineering]
+categories: [LLM Engineering, System Cognition]
 tags: [Methodology, SDD, AI Coding]
 description: 软件开发的未来不再是编写更多的代码，而是指导 AI 编写更好的代码。本文深入探讨从 Vibe Coding 到规范驱动开发 (SDD) 的范式演变。
 pin: false
