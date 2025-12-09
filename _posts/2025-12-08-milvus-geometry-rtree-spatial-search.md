@@ -6,7 +6,8 @@ date: 2025-12-08 10:21:00 +0800
 categories: [LLM Engineering, Coding Lab]
 tags: [Milvus, vector database, geometry, spatial search, Performance]
 pin: false
-mermaid: false
+math: true
+mermaid: true
 comments: true
 ---
 

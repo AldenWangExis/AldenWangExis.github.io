@@ -39,6 +39,16 @@ comments: true
 | `layout` | 布局 | 无需设置 | 默认已设置为 `post`。 |
 | `render_with_liquid` | Liquid 渲染控制 | `false` | (Jekyll 4.0+): 设置为 `false` 可在内容中直接显示 Liquid 标签，替代 `{% raw %}`。 |
 
+categories 分类推荐：
+优先考虑以下分类，实在无法放入时，再创建新的 categories
+- System Cognition (系统认知): 包含哲学思考、书评、宏观架构理论、方法论；
+- LLM Engineering(LLM 工程): 聚焦 LLM 的具体应用架构、推理引擎、Agent 开发、RAG 等；
+- DevOps (云原生与运维): 聚焦基础设施、容器化、网络加速、部署流程；
+- Coding Lab (代码实验室): 具体的编程实战、逆向工程、工具使用教程。
+
+tags 参考推荐
+[Philosophy, Complexity, Book Review, Azure, Docker, CLI, Container, Inference, vLLM, llama.cpp, Performance, Vibe Coding, Methodology, Language, Cognition, Structure, Architecture, RAG, Snowflake, Data Gravity, SDD, AI Coding, Best Practice, LLM Ops, Ollama, Agent, MCP, Anthropic, Entropy, Declarative, Vercel, CDN, EdgeOne, Network, Reverse Engineering]
+
 -----
 
 ## 🔩 帖子元数据与控制
