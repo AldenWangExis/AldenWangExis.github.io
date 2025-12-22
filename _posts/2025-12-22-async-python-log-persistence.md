@@ -530,3 +530,126 @@ async def batch_log_worker(session_factory):
 
 - 业务审计（Audit Log）：选方案 B（通过 Service 写入）
 - 全量行为追踪（Event Tracking）：选方案 A（但不要直接写 MySQL，建议写到 Stdout 让 Vector/Filebeat 搬运到日志中心）
+
+---
+
+## 进阶架构：引入 Grafana Loki
+
+与 ELK 相比，Loki 被称为"像 Prometheus 一样的日志系统"。它的核心哲学是：不索引日志内容，只索引标签（Labels）。这使得它极其轻量、存储成本极低，且与 Grafana 完美集成。
+
+在 Python (structlog + uv) 环境中接入 Loki，有三种主流方案。
+
+### 方案一：直接推送（Direct Push）
+
+使用 Loki 的 HTTP API，由 Python 异步任务直接发送日志。
+
+工具：`python-logging-loki` 或自定义异步 Client。
+
+原理：在 Worker 逻辑中，除了写 MySQL，多加一个步骤把日志推送到 Loki。
+
+```python
+# 使用 uv add python-logging-loki 后
+import logging
+import logging_loki
+
+handler = logging_loki.LokiHandler(
+    url="http://loki-server:3100/loki/api/v1/push",
+    tags={"application": "my-api", "env": "prod"},  # 这些是 Labels（索引）
+    version="1",
+)
+
+# 在 structlog 配置中使用这个 handler
+```
+
+- **优点**：不需要安装额外的采集器（Agent）。
+- **缺点**：如果 Loki 挂了，可能会丢日志或影响业务（虽然有异步队列缓冲）。
+
+### 方案二：标准容器化采集（Stdout + Promtail）
+
+这是云原生（Docker/K8s）下的标准做法。
+
+1. **Python 部分**：通过 `structlog` 把日志以 JSON 格式打印到 `stdout`（标准输出）。
+2. **采集部分**：部署一个 Promtail（Loki 的官方采集器）容器。
+3. **链路**：`Python -> Stdout -> Docker Logs -> Promtail -> Loki`。
+
+**为什么推荐这个？**
+
+- **解耦**：Python 程序不需要知道 Loki 的地址，只需要管打印。
+- **性能**：打印到 Stdout 是极快的，IO 压力交给了专门的 Promtail。
+- **自动元数据**：Promtail 会自动给日志加上 Docker 容器名、镜像 ID 等标签。
+
+### 方案三：双写模式（MySQL 审计 + Loki 追踪）
+
+由于已经建立了 MySQL 日志表，可以采用动静分离的架构：
+
+1. **MySQL**：只存"审计日志"（如：资金变动、权限修改）。数据量小，要求绝对可靠。
+2. **Loki**：存"系统运行日志"（如：请求响应、调试信息、错误堆栈）。数据量大，要求查询快。
+
+#### 实现步骤
+
+**步骤 1：配置 structlog 输出 JSON**
+
+```python
+import structlog
+
+structlog.configure(
+    processors=[
+        structlog.processors.add_log_level,
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.JSONRenderer()  # 必须是 JSON，Loki 处理 JSON 极强
+    ],
+    logger_factory=structlog.PrintLoggerFactory(),  # 直接打印到 stdout
+)
+
+logger = structlog.get_logger()
+```
+
+**步骤 2：启动 Loki 和 Grafana**
+
+使用 `docker-compose` 快速部署：
+
+```yaml
+services:
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+
+  promtail:
+    image: grafana/promtail:latest
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    configs:
+      - source: promtail-config.yaml
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+```
+
+**步骤 3：在 Grafana 中查看**
+
+1. 打开 Grafana (localhost:3000)。
+2. 添加 Datasource，选择 Loki，地址填 `http://loki:3100`。
+3. 进入 Explore 页面，输入查询语句：`{container_name="my_python_app"} | json`。
+
+### Loki 的标签（Labels）设计
+
+在 Loki 中，Labels 决定了查询效率。
+
+- **好的 Labels (索引)**：`env` (prod/dev), `service` (order-api), `level` (error/info)。
+- **坏的 Labels (不要索引)**：`user_id`, `request_id`, `message`。
+
+为什么？如果把 `user_id` 放在 Label 里，Loki 会产生无数个小的索引文件（High Cardinality 问题），直接卡死。
+
+正确做法：把 `user_id` 放在 JSON 消息体里。Loki 可以在查询时实时过滤 JSON 字段。
+
+### Loki 集成建议
+
+1. **继续保留 MySQL 日志表**：用于存放那些"绝对不能丢、且需要和业务数据做 Join 查询"的关键审计数据。
+2. **引入 Loki 处理全量日志**：
+   - 修改 `structlog` 配置，确保输出的是单行 JSON。
+   - 让 Worker 只管写 MySQL 关键日志。
+   - 全量日志直接通过 `print()` 输出，交给 Promtail 送往 Loki。
+3. **利用 Grafana**：在一个面板里，可以同时展示 MySQL 里的订单统计图表和 Loki 里的错误日志流，这才是顶级工程师的监控面板。
