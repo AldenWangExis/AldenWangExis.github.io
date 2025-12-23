@@ -2,7 +2,7 @@
 title: CLU API Service 架构剖析：Azure 云服务限制下的工程实践
 description: "面向 Azure CLU 服务特性深度优化的中间层封装，解决 API 限流、同步 SDK 非阻塞化、多项目意图聚合等核心工程问题"
 author: Alden
-date: 2025-12-23 10:00:00 +0800
+date: 2025-08-28 10:00:00 +0800
 categories: [LLM Engineering]
 tags: [Azure, FastAPI, Architecture, Best Practice]
 pin: false
