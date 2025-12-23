@@ -3,7 +3,7 @@ title: Milvus 向量数据库工程实践：批量插入优化与 TTL Collection
 description: 从一次 21x 性能提升的批量插入优化，到基于 TTL 的临时 Collection 架构设计，记录 Milvus 在 RAG 工程中的两个典型实践场景。
 author: Alden
 date: 2025-09-05 10:00:00 +0800
-categories: [LLM Engineering]
+categories: [LLM Engineering, Coding Lab]
 tags: [Milvus, RAG, Performance, Architecture, Best Practice]
 pin: false
 mermaid: true
