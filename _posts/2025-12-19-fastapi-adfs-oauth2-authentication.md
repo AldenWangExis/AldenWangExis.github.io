@@ -10,11 +10,42 @@ mermaid: true
 comments: true
 ---
 
-在企业级系统集成场景中，AD FS (Active Directory Federation Services) 是 Windows Server 提供的联合身份验证服务，广泛用于单点登录（SSO）。本文基于 Python 3.10+ 和 FastAPI 技术栈，记录 OAuth 2.0 Authorization Code Flow 的完整实现路径。
+在企业级系统集成场景中，身份认证是绑定内部系统与企业用户体系的关键环节。本文基于 Python 3.10+ 和 FastAPI 技术栈，记录 OAuth 2.0 Authorization Code Flow 与 AD FS 集成的完整实现路径。
 
-## OAuth 2.0 Authorization Code Flow 概述
+## 核心概念
 
-Authorization Code Flow（授权码模式）是 OAuth 2.0 中安全性最高的授权方式，适用于有后端服务器的 Web 应用。其核心流程如下：
+### AD FS 是什么
+
+AD FS (Active Directory Federation Services) 是 Windows Server 内置的联合身份验证服务，充当企业内部 Active Directory 与外部应用之间的"身份中介"。
+
+核心职责：
+
+- **身份联合**：将 AD 域账户的身份信息以标准协议（SAML、OAuth 2.0、OpenID Connect）暴露给外部应用
+- **单点登录 (SSO)**：用户登录一次 AD FS，即可访问所有已注册的应用，无需重复输入凭据
+- **声明转换**：将 AD 属性（如 `sAMAccountName`、`mail`、`memberOf`）映射为 Token 中的 Claims
+
+在 OAuth 2.0 场景中，AD FS 扮演 **Authorization Server（授权服务器）** 角色，负责验证用户身份并签发 Access Token。
+
+### OAuth 2.0 协议基础
+
+OAuth 2.0 是一个授权框架，解决的核心问题是：**如何让第三方应用在不获取用户密码的情况下，安全地访问用户资源**。
+
+四个核心角色：
+
+| 角色 | 说明 | 本文对应 |
+| :--- | :--- | :--- |
+| Resource Owner | 资源所有者（用户） | 企业员工 |
+| Client | 请求访问资源的应用 | FastAPI 后端 |
+| Authorization Server | 验证身份、签发令牌 | AD FS |
+| Resource Server | 托管受保护资源的服务 | 业务 API |
+
+OAuth 2.0 定义了四种授权模式，其中 **Authorization Code Flow（授权码模式）** 安全性最高，适用于有后端服务器的 Web 应用。
+
+## Authorization Code Flow 流程详解
+
+授权码模式的核心思想是**两步换取**：先用用户授权换取一次性授权码（code），再用授权码换取访问令牌（access_token）。授权码只能使用一次且有效期极短（通常 10 分钟），即使被截获也难以利用。
+
+完整流程如下：
 
 ```mermaid
 sequenceDiagram
@@ -237,6 +268,52 @@ async def logout(request: Request):
 
 **Token 换取自动化**：`authorize_access_token(request)` 一行代码自动完成：获取授权码、构造 POST 请求、处理 Header 和数据编码、解析返回的 JSON。
 
+### 引入 PKCE 加固安全
+
+PKCE (Proof Key for Code Exchange，读作 "pixy") 是 OAuth 2.0 的安全扩展（RFC 7636），最初为移动端和 SPA 设计，现已成为所有公开客户端的推荐实践。
+
+**解决的问题**：传统授权码模式中，如果攻击者截获了 `code`（例如通过恶意浏览器插件或日志泄露），可以直接用它换取 Token。PKCE 通过"证明你是发起请求的那个人"来防止这种攻击。
+
+**工作原理**：
+
+```mermaid
+sequenceDiagram
+    participant App as FastAPI 后端
+    participant ADFS as AD FS
+
+    Note over App: 生成随机 code_verifier
+    Note over App: 计算 code_challenge = SHA256(code_verifier)
+    App->>ADFS: 1. 授权请求 + code_challenge
+    ADFS->>App: 2. 返回 code
+    App->>ADFS: 3. Token 请求 + code_verifier
+    Note over ADFS: 验证 SHA256(code_verifier) == code_challenge
+    ADFS->>App: 4. 返回 access_token
+```
+
+即使攻击者截获了 `code`，由于不知道 `code_verifier`，也无法完成 Token 交换。
+
+**Authlib 启用 PKCE**：
+
+```python
+oauth.register(
+    name='adfs',
+    client_id=ADFS_CLIENT_ID,
+    client_secret=ADFS_CLIENT_SECRET,
+    authorize_url=ADFS_AUTHORIZE_URL,
+    access_token_url=ADFS_TOKEN_URL,
+    client_kwargs={
+        'scope': 'openid profile',
+        'resource': ADFS_RESOURCE,
+        'code_challenge_method': 'S256'  # 启用 PKCE
+    },
+)
+```
+
+Authlib 会自动处理 `code_verifier` 的生成、存储（Session）和发送，无需手动干预。
+
+> AD FS 从 Windows Server 2016 开始支持 PKCE。如果你的 AD FS 版本较旧，需要确认是否支持此特性。
+{: .prompt-info }
+
 ## 前后端分离架构：REDIRECT_URI 的选择
 
 在 Vue 3 + FastAPI 的前后端分离架构中，`REDIRECT_URI` 应该填前端地址还是后端地址？
@@ -317,13 +394,120 @@ async def auth_callback(request: Request):
 
 ## 生产环境注意事项
 
-**JWT 签名验证**：必须从 ADFS 元数据地址获取公钥，验证 Token 是否由 ADFS 真实签发。
+### JWT 签名验证与 JWKS 缓存
+
+生产环境必须验证 Token 签名，确保 Token 确实由 AD FS 签发且未被篡改。AD FS 的公钥通过 JWKS (JSON Web Key Set) 端点动态发布，且会定期轮转。
+
+**为什么需要 JWKS 缓存器**：
+
+- **性能**：每次验证 Token 都请求 JWKS 端点会产生不必要的网络开销
+- **可用性**：如果 AD FS 短暂不可用，缓存的公钥仍可继续验证 Token
+- **密钥轮转**：AD FS 会定期更换签名密钥，缓存器需要能够自动刷新
+
+**使用 PyJWT + PyJWKClient 实现**：
 
 ```python
-# 获取 ADFS 公钥
-ADFS_METADATA_URL = "https://adfs.example.com/adfs/.well-known/openid-configuration"
-# 使用 jwt.decode 时传入公钥进行验证
+import jwt
+from jwt import PyJWKClient
+
+# JWKS 端点（从 OpenID 元数据获取）
+JWKS_URL = "https://adfs.example.com/adfs/discovery/keys"
+
+# 创建带缓存的 JWKS 客户端
+# lifespan: 缓存有效期（秒），max_cached_keys: 最大缓存密钥数
+jwks_client = PyJWKClient(JWKS_URL, lifespan=3600, max_cached_keys=16)
+
+def verify_token(access_token: str) -> dict:
+    """验证 AD FS 签发的 JWT"""
+    try:
+        # 从 JWKS 获取签名密钥（自动缓存）
+        signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+
+        # 验证并解码 Token
+        payload = jwt.decode(
+            access_token,
+            signing_key.key,
+            algorithms=["RS256"],
+            audience=ADFS_CLIENT_ID,  # 验证 aud claim
+            options={"verify_exp": True}  # 验证过期时间
+        )
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token 已过期")
+    except jwt.InvalidTokenError as e:
+        raise HTTPException(status_code=401, detail=f"Token 无效: {str(e)}")
 ```
+
+**密钥轮转处理**：当 AD FS 轮转密钥时，新签发的 Token 使用新密钥签名。`PyJWKClient` 会根据 Token Header 中的 `kid` (Key ID) 自动匹配正确的公钥。如果缓存中没有对应的 `kid`，会自动刷新 JWKS。
+
+**手动实现 JWKS 缓存器**（更细粒度控制）：
+
+```python
+import httpx
+from datetime import datetime, timedelta
+from jose import jwt, jwk
+from jose.exceptions import JWTError
+
+class JWKSCache:
+    """JWKS 缓存器，支持自动刷新和密钥轮转"""
+
+    def __init__(self, jwks_url: str, cache_ttl: int = 3600):
+        self.jwks_url = jwks_url
+        self.cache_ttl = cache_ttl
+        self._keys: dict = {}
+        self._expires_at: datetime = datetime.min
+
+    async def get_key(self, kid: str) -> dict:
+        """根据 kid 获取公钥，必要时刷新缓存"""
+        if datetime.now() >= self._expires_at or kid not in self._keys:
+            await self._refresh()
+
+        if kid not in self._keys:
+            raise JWTError(f"Unknown kid: {kid}")
+
+        return self._keys[kid]
+
+    async def _refresh(self):
+        """从 JWKS 端点刷新公钥"""
+        async with httpx.AsyncClient() as client:
+            response = await client.get(self.jwks_url)
+            response.raise_for_status()
+            jwks = response.json()
+
+        self._keys = {
+            key["kid"]: jwk.construct(key)
+            for key in jwks.get("keys", [])
+        }
+        self._expires_at = datetime.now() + timedelta(seconds=self.cache_ttl)
+
+# 使用示例
+jwks_cache = JWKSCache("https://adfs.example.com/adfs/discovery/keys")
+
+async def verify_token_manual(access_token: str) -> dict:
+    """使用自定义缓存器验证 Token"""
+    # 解析 Header 获取 kid
+    unverified_header = jwt.get_unverified_header(access_token)
+    kid = unverified_header.get("kid")
+
+    # 获取对应的公钥
+    public_key = await jwks_cache.get_key(kid)
+
+    # 验证签名
+    payload = jwt.decode(
+        access_token,
+        public_key,
+        algorithms=["RS256"],
+        audience=ADFS_CLIENT_ID
+    )
+    return payload
+```
+
+> 建议 JWKS 缓存 TTL 设置为 1 小时左右。太短会频繁请求 AD FS，太长可能导致密钥轮转后验证失败。
+{: .prompt-tip }
+
+### 其他生产环境要点
+
+### 其他生产环境要点
 
 **Redirect URI 一致性**：代码中通过 `request.url_for` 生成的地址必须与 ADFS 后台注册的地址完全一致。
 
@@ -336,7 +520,8 @@ ADFS_METADATA_URL = "https://adfs.example.com/adfs/.well-known/openid-configurat
 | 场景 | 推荐方案 |
 | :--- | :--- |
 | 快速原型/脚本测试 | python-jose + httpx 手动实现 |
-| 企业级生产集成 | Authlib + SessionMiddleware |
+| 企业级生产集成 | Authlib + SessionMiddleware + PKCE |
 | 前后端分离架构 | REDIRECT_URI 填后端地址 |
+| Token 签名验证 | PyJWKClient 或自定义 JWKS 缓存器 |
 
-Authlib 在处理 ADFS 这类标准 OAuth2 企业集成时，能显著减少关于刷新令牌和安全性检查的底层代码。其 `authorize_redirect` 和 `authorize_access_token` 两个方法封装了完整的授权码流程，包括 state 防护、Token 交换和 JWT 解析。
+Authlib 在处理 ADFS 这类标准 OAuth2 企业集成时，能显著减少底层代码。配合 PKCE 扩展可防止授权码劫持，JWKS 缓存器则解决了公钥动态轮转的问题。其 `authorize_redirect` 和 `authorize_access_token` 两个方法封装了完整的授权码流程，包括 state 防护、PKCE 验证、Token 交换和 JWT 解析。
