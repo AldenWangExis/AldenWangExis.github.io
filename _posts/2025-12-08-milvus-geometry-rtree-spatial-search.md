@@ -1,5 +1,5 @@
 ---
-title: Milvus | 空间与语义的融合：Milvus 地理几何字段与 R-Tree 索引技术详解
+title: 空间与语义的融合：Milvus 地理几何字段与 R-Tree 索引技术详解
 description: 深入剖析 Milvus 2.6.4 版本引入的 Geometry 数据类型与 R-Tree 索引，探讨如何在向量数据库中实现高效的"空间+语义"混合查询能力
 author: Alden
 date: 2025-12-08 10:21:00 +0800
