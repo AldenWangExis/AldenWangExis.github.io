@@ -4,7 +4,7 @@ description: 基于 FastAPI + LangGraph 0.3.5 的 SSE 流式响应架构，深�
 author: Alden
 date: 2025-09-23 10:00:00 +0800
 categories: [LLM Engineering, Coding Lab]
-tags: [langgraph, architecture, agent, sse]
+tags: [langgraph, Architecture, agent, sse]
 pin: false
 mermaid: true
 comments: true

@@ -4,7 +4,7 @@ description: 针对 PDFMathTranslate 在本地 LLM 部署场景下的性能瓶�
 author: Alden
 date: 2025-06-23 10:00:00 +0800
 categories: [LLM Engineering]
-tags: [llm ops, performance, inference, architecture]
+tags: [llm ops, performance, inference, Architecture]
 pin: false
 mermaid: true
 comments: true
