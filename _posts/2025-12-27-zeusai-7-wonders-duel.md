@@ -2,7 +2,7 @@
 title: ZeusAI：当强化学习遇上《七大奇迹：对决》
 description: 一篇关于 ZeusAI 的论文解读，探讨如何用 AlphaZero 风格的强化学习训练 AI 玩七大奇迹对决，以及 AI 发现的策略洞察和游戏平衡性分析
 author: Alden
-date: 2024-12-27 10:00:00 +0800
+date: 2025-12-27 10:00:00 +0800
 categories: [LLM Engineering]
 tags: [reinforcement-learning, transformer, mcts, board-game]
 pin: false
