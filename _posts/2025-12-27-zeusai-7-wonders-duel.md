@@ -14,7 +14,7 @@ comments: true
 
 ## 七大奇迹：对决
 
-七大奇迹：对决发布于 2015 年，是经典多人游戏七大奇迹的双人版本。截至 2021 年 12 月，它在 BoardGameGeek（BGG） 排名第 21 位。关于 Board Game Arena（BGA）上的详细统计数据，可以参考社区整理的 [7WD in Numbers](https://forum.boardgamearena.com/viewtopic.php?t=25369)。
+七大奇迹：对决发布于 2015 年，是经典多人游戏七大奇迹的双人版本。每位玩家都是一个文明的领袖，为城市建造建筑和奇迹。截至 2025 年 12 月，它在 BoardGameGeek（BGG） 排名第 21 位。关于 Board Game Arena（BGA）上的详细统计数据，可以参考社区整理的 [7WD in Numbers](https://forum.boardgamearena.com/viewtopic.php?t=25369)。
 
 这是一款完全信息博弈游戏——没有隐藏手牌，不存在 bluffing 的空间，理论上存在最优策略。但与围棋、国际象棋不同的是，游戏中存在随机性：卡牌的翻开顺序、奇迹的出现顺序都是随机的。
 
@@ -130,7 +130,7 @@ ZeusAI 经常在第一和第二时代就建造蓝色文化卡，试图在分数�
 
 按选择频率排序，前三名是宗教（Theology）、法律（Law）和战略（Strategy），这与社区公认的最强发展标记一致。有玩家对数学（Mathematics）排名较低感到意外。
 
-![发展标记选择频率排名](/2406.00741v1.pdf-bb514eb5-0f08-4340-8c84-c0c8d952647c/images/47bf2d61b35d1870af5b7793ca9f9d3d26676aaa3f958edbb681f1419d5aca7e.jpg)
+![发展标记选择频率排名](https://arxiv.org/html/2406.00741v1/extracted/5637968/imgs/7wd_tokens_v1_1.drawio.png)
 _Fig. 6: 发展标记按 ZeusAI 选择频率排名_
 
 研究者表示，他们有更详细的选择率数据，可能会在后续论文或直播中公布。
