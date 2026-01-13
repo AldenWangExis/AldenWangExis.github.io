@@ -12,63 +12,63 @@ comments: true
 
 ## 部署架构概述
 
-GitHub Pages 提供两种部署模式：用户/组织站点（`username.github.io`）和项目站点（`username.github.io/repo-name`）。本文聚焦于项目站点的部署实现，核心架构包含源码分支（`main`）与部署分支（`gh-pages`）的分离设计。
+GitHub Pages 提供两种部署模式：用户站点（`username.github.io`）与项目站点（`username.github.io/repo-name`）。本文聚焦项目站点部署，采用源码分支（`main`）与部署分支（`gh-pages`）分离架构。
 
 ```mermaid
 graph LR
     A[main 分支] -->|push 触发| B[GitHub Actions]
-    B -->|构建| C[VuePress Build]
-    C -->|生成静态文件| D[gh-pages 分支]
-    D -->|自动发布| E[GitHub Pages CDN]
-    E -->|访问| F[https://username.github.io/repo-name/]
+    B -->|执行构建| C[VuePress Build]
+    C -->|输出静态文件| D[gh-pages 分支]
+    D -->|触发发布| E[GitHub Pages CDN]
+    E -->|响应请求| F[https://username.github.io/repo-name/]
 ```
 
-关键设计点：
+核心机制：
 
-- **源码与产物分离**：`main` 分支存储源码，`gh-pages` 分支仅存储构建产物
-- **自动化触发**：基于 GitHub Actions 的 CI/CD 流水线
-- **CDN 分发**：GitHub Pages 自动将内容推送至全球 CDN 节点
+- **分支隔离**：`main` 存储源码，`gh-pages` 仅存储构建产物，避免混合版本控制
+- **自动触发**：基于 GitHub Actions 的 CI/CD 流水线，推送即部署
+- **CDN 分发**：GitHub Pages 将内容推送至全球边缘节点，实现就近访问
 
-### 用户级页面与项目级页面共存
+### 用户站点与项目站点共存机制
 
-GitHub Pages 支持同一账户下同时部署用户级站点和多个项目级站点，各自独立运行，互不干扰。
+GitHub Pages 允许同一账户下部署一个用户站点和多个项目站点，通过路径前缀实现隔离。
 
 ```mermaid
 graph TB
-    subgraph "用户级页面"
+    subgraph "用户站点"
         A[Repository: username.github.io]
-        B[访问地址: https://username.github.io/]
+        B[路径: /]
         A --> B
     end
     
-    subgraph "项目级页面"
+    subgraph "项目站点"
         C[Repository: llm-docs]
-        D[访问地址: https://username.github.io/llm-docs/]
+        D[路径: /llm-docs/]
         C --> D
     end
     
-    B -.独立部署.-> D
+    B -.路径隔离.-> D
 ```
 
-架构特性：
+隔离机制：
 
-- **路径隔离**：用户级页面占据根路径 `/`，项目级页面占据子路径 `/repo-name/`
-- **独立部署**：各站点使用独立的仓库和部署流程，互不影响
-- **资源独立**：各站点的静态资源（CSS、JS、图片）完全隔离
+- **路径命名空间**：用户站点占据根路径 `/`，项目站点占据子路径 `/repo-name/`
+- **独立部署流程**：各站点使用独立仓库和 CI/CD 流水线，互不干扰
+- **资源作用域**：静态资源（CSS、JS、图片）通过路径前缀实现作用域隔离
 
 典型场景：
 
 ```
-用户级页面（个人博客）
+用户站点（个人博客）
 Repository: aldenwangexis.github.io
-访问地址: https://aldenwangexis.github.io/
+URL: https://aldenwangexis.github.io/
 ├── index.html
 ├── posts/
 └── assets/
 
-项目级页面（技术文档）
+项目站点（技术文档）
 Repository: llm-docs
-访问地址: https://aldenwangexis.github.io/llm-docs/
+URL: https://aldenwangexis.github.io/llm-docs/
 ├── index.html
 ├── guide/
 └── assets/
@@ -78,11 +78,11 @@ Repository: llm-docs
 
 ### 路径解析逻辑
 
-GitHub Pages 的项目站点部署在子路径下（`/repo-name/`），所有资源引用必须包含该前缀。VuePress 通过 `base` 配置项控制资源路径生成。
+GitHub Pages 将项目站点部署在子路径下（`/repo-name/`），浏览器请求资源时必须携带该前缀。VuePress 通过 `base` 配置项控制构建时生成的资源路径。
 
 | 部署类型 | 仓库名 | 访问地址 | base 配置 |
 |---------|--------|---------|----------|
-| 用户/组织站点 | `username.github.io` | `https://username.github.io/` | `"/"` |
+| 用户站点 | `username.github.io` | `https://username.github.io/` | `"/"` |
 | 项目站点 | 任意名称 | `https://username.github.io/repo-name/` | `"/repo-name/"` |
 
 ### 配置实现
@@ -96,18 +96,18 @@ export default defineUserConfig({
 });
 ```
 
-### 路径错误的影响
+### 路径错误导致的资源解析失败
 
-错误配置 `base: "/"` 会导致资源路径解析失败：
+错误配置 `base: "/"` 会导致浏览器向错误路径发起请求：
 
 ```html
 <!-- 错误配置：base: "/" -->
 <link href="/assets/style.css">
-<!-- 实际请求：https://username.github.io/assets/style.css (404) -->
+<!-- 浏览器请求：https://username.github.io/assets/style.css (404) -->
 
 <!-- 正确配置：base: "/llm-docs/" -->
 <link href="/llm-docs/assets/style.css">
-<!-- 实际请求：https://username.github.io/llm-docs/assets/style.css (200) -->
+<!-- 浏览器请求：https://username.github.io/llm-docs/assets/style.css (200) -->
 ```
 
 ## GitHub Actions 工作流设计
@@ -165,7 +165,7 @@ jobs:
 
 #### 1. `.nojekyll` 文件
 
-GitHub Pages 默认使用 Jekyll 处理静态文件，会忽略以 `_` 开头的文件和目录。VuePress 构建产物包含 `_assets`、`_nuxt` 等目录，必须创建 `.nojekyll` 文件禁用 Jekyll 处理。
+GitHub Pages 默认启用 Jekyll 处理器，会忽略以 `_` 开头的文件和目录。VuePress 构建产物包含 `_assets`、`_nuxt` 等目录，必须创建 `.nojekyll` 文件禁用 Jekyll 处理器。
 
 ```bash
 > src/.vuepress/dist/.nojekyll
@@ -173,7 +173,7 @@ GitHub Pages 默认使用 Jekyll 处理静态文件，会忽略以 `_` 开头的
 
 #### 2. 权限配置
 
-`permissions: contents: write` 授予工作流向 `gh-pages` 分支推送的权限。缺少此配置会导致部署失败并报错：
+`permissions: contents: write` 授予工作流向 `gh-pages` 分支推送的权限。缺少此配置会导致 Git 推送失败：
 
 ```
 Error: The process '/usr/bin/git' failed with exit code 128
@@ -181,7 +181,7 @@ Error: The process '/usr/bin/git' failed with exit code 128
 
 #### 3. 完整 Git 历史
 
-`fetch-depth: 0` 获取完整 Git 历史记录。某些 VuePress 插件（如 `@vuepress/plugin-git`）依赖 Git 历史生成页面元数据（最后更新时间、贡献者等）。
+`fetch-depth: 0` 获取完整 Git 历史记录。部分 VuePress 插件（如 `@vuepress/plugin-git`）依赖 Git 历史生成页面元数据（最后更新时间、贡献者信息）。
 
 ## 部署流程
 
@@ -210,7 +210,7 @@ git push origin main
 - **Branch**: `gh-pages`
 - **Folder**: `/ (root)`
 
-> 此步骤是部署的必要条件。即使 `gh-pages` 分支已存在，未在设置中启用仍无法访问站点。
+> 此步骤是站点可访问的必要条件。即使 `gh-pages` 分支已存在构建产物，未在设置中启用仍无法访问。
 {: .prompt-warning }
 
 ### 4. 验证部署状态
@@ -239,11 +239,11 @@ sequenceDiagram
     Git->>Actions: 触发工作流
     Actions->>Actions: checkout 代码
     Actions->>Actions: 安装依赖 (npm ci)
-    Actions->>Actions: 构建项目 (npm run docs:build)
-    Actions->>Actions: 生成 .nojekyll 文件
-    Actions->>Git: 推送到 gh-pages 分支
+    Actions->>Actions: 执行构建 (npm run docs:build)
+    Actions->>Actions: 注入 .nojekyll 文件
+    Actions->>Git: 推送至 gh-pages 分支
     Git->>Pages: 检测分支更新
-    Pages->>Pages: 发布到 CDN
+    Pages->>Pages: 分发至 CDN
     Pages-->>Dev: 站点可访问
 ```
 
@@ -255,23 +255,23 @@ sequenceDiagram
 
 **现象分类**：
 
-#### 情况 A：显示用户级页面的 404
+#### 情况 A：显示用户站点的 404 页面
 
-如果已部署用户级站点（如个人博客），项目级页面的 404 会显示用户级页面的 404 样式。这是正常的路由行为：
+如果已部署用户站点（如个人博客），项目站点的 404 会显示用户站点的 404 样式。这是正常的路由回退行为：
 
 ```mermaid
 sequenceDiagram
     participant Browser as 浏览器
     participant Pages as GitHub Pages
-    participant User as 用户级站点
-    participant Project as 项目级站点
+    participant User as 用户站点
+    participant Project as 项目站点
     
     Browser->>Pages: 请求 /llm-docs/
-    Pages->>Project: 查找项目级站点
+    Pages->>Project: 查找项目站点
     alt 项目未启用
         Project-->>Pages: 未找到
-        Pages->>User: 返回用户级 404
-        User-->>Browser: 显示博客主题的 404
+        Pages->>User: 回退至用户站点
+        User-->>Browser: 返回用户站点 404
     else 项目已启用
         Project-->>Pages: 返回内容
         Pages-->>Browser: 显示文档站点
@@ -282,7 +282,7 @@ sequenceDiagram
 
 1. **验证 GitHub Pages 启用状态**（最常见原因）
 
-   检查 `Settings → Pages` 中是否已配置 `gh-pages` 分支。即使 GitHub Actions 成功部署到 `gh-pages` 分支，未在设置中启用仍无法访问。
+   检查 `Settings → Pages` 中是否已配置 `gh-pages` 分支。即使 GitHub Actions 成功推送至 `gh-pages` 分支，未在设置中启用仍无法访问。
 
 2. **验证 base 路径配置**
 
@@ -306,13 +306,13 @@ sequenceDiagram
 
 #### 情况 B：显示 GitHub 默认 404
 
-如果显示 GitHub 默认的 404 页面（纯白背景），说明仓库本身不存在或访问权限问题。检查仓库是否为 Public 或已启用 GitHub Pages。
+如果显示 GitHub 默认 404 页面（纯白背景），说明仓库不存在或访问权限问题。检查仓库是否为 Public 或已启用 GitHub Pages。
 
 ### 问题 2：样式丢失或资源 404
 
 **症状**：页面可访问但样式错乱，浏览器控制台显示 CSS/JS 文件 404。
 
-**原因**：`base` 路径配置错误导致资源路径解析失败。
+**原因**：`base` 路径配置错误导致浏览器向错误路径发起资源请求。
 
 **解决方案**：
 
@@ -350,7 +350,7 @@ git push origin main
 
 3. **本地复现**
 
-   在本地环境执行工作流中的命令：
+   在本地环境执行工作流命令：
 
    ```bash
    npm ci
@@ -377,7 +377,7 @@ git push origin main
 
 3. **等待 CDN 传播**
 
-   GitHub Pages 使用 CDN 分发内容，更新可能需要 1-5 分钟。可通过添加查询参数绕过缓存：
+   GitHub Pages 使用 CDN 分发内容，更新需要 1-5 分钟传播至全球节点。可通过添加查询参数绕过缓存：
 
    ```
    https://username.github.io/repo-name/?t=1234567890
@@ -399,21 +399,3 @@ npx serve src/.vuepress/dist -s -p 8080
 
 > 本地预览时必须访问 `http://localhost:8080/repo-name/`，而非 `http://localhost:8080/`，以模拟生产环境的子路径部署。
 {: .prompt-tip }
-
-## 部署检查清单
-
-在推送代码前，确认以下配置项：
-
-- [ ] `src/.vuepress/config.ts`{: .filepath} 中 `base` 设置为 `/repo-name/`
-- [ ] `.github/workflows/deploy-docs.yml`{: .filepath} 中 `branches` 设置为 `main`
-- [ ] `.github/workflows/deploy-docs.yml`{: .filepath} 中包含 `permissions: contents: write`
-- [ ] `.github/workflows/deploy-docs.yml`{: .filepath} 中生成 `.nojekyll` 文件
-- [ ] GitHub Settings → Pages 中 Source 设置为 `gh-pages` 分支
-- [ ] 本地构建测试通过：`npm run docs:build`
-
-## 参考资源
-
-- [VuePress Deployment Guide](https://v2.vuepress.vuejs.org/guide/deployment.html#github-pages)
-- [GitHub Pages Documentation](https://docs.github.com/en/pages)
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [github-pages-deploy-action](https://github.com/JamesIves/github-pages-deploy-action)
