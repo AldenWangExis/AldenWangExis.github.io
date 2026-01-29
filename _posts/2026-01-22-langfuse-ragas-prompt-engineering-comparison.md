@@ -484,6 +484,63 @@ class RobustEvalPrompt(PydanticPrompt[EvalInput, EvalOutput]):
 
 ---
 
+## DSPy 优化器集成：数据驱动的 Prompt 演化
+
+在混合架构基础上，RAGAS 的 DSPy 优化器为 LangFuse 托管的 Prompt 提供了数据驱动的优化能力，形成"优化 → 托管 → 追踪 → 再优化"的完整闭环。
+
+### 集成架构
+
+DSPy 优化器通过人工标注数据自动搜索最优 Prompt 指令，LangFuse 负责托管优化后的多个版本并进行灰度发布。两者结合解决了 Prompt 生命周期的两个核心问题：如何找到好的 Prompt（DSPy），如何管理和追踪这些 Prompt（LangFuse）。
+
+```mermaid
+
+flowchart TB
+    subgraph 优化层["优化层: DSPy Optimizer"]
+        direction LR 
+        O1[收集评估样本]
+        O2[人工标注验收]
+        O3[MIPROv2 搜索]
+        O4[生成优化指令]
+    end
+    
+    subgraph 托管层["托管层: LangFuse"]
+        direction LR
+        L1[上传新版本]
+        L2[标记 dev/staging]
+        L3[A/B 测试]
+        L4[切换 production]
+    end
+    
+    subgraph 监控层["监控层: LangFuse Trace"]
+        direction LR
+        T1[追踪调用]
+        T2[性能分析]
+        T3[错误收集]
+        T4[触发重优化]
+    end
+    
+    O1 --> O2 --> O3 --> O4
+    O4 --> L1 --> L2 --> L3 --> L4
+    L4 --> T1 --> T2 --> T3 --> T4
+    T4 -.-> O1
+    
+    style O4 fill:#e1f5ff
+    style L4 fill:#fff4e1
+    style T4 fill:#ffe1f5
+```
+
+### 完整工作流与实践
+
+集成工作流从初始部署开始，先从 LangFuse 获取人工编写的通用 Prompt 模板作为基线。随后运行评估收集样本，人工审核标记 `is_accepted` 和 `edited_output`，积累 20-30 个高质量标注后启动 DSPy 优化器。优化器通过 MIPROv2 算法在验证集上反复评估候选指令（候选数 × 样本数 × 评估轮次的大量 LLM 调用，轻量级配置耗时数分钟，深度配置可能需要数小时），选出得分最高的配置。
+
+优化完成后，将新 instruction 上传到 LangFuse 创建版本，经过 dev 开发测试 → staging 小流量灰度（10% 流量）→ 通过 Trace 对比性能指标（准确率、召回率、响应时间）→ 切换 production 全量发布的完整链路。生产环境中，LangFuse Trace 持续记录每次调用的 Prompt 版本、输入输出和性能指标，发现新错误案例时收集标注并增量扩充训练集，周期性（如每月）重新运行优化器，形成持续改进闭环。
+
+工程实践需要建立三个关键机制：自动化流程（脚本收集 Trace 错误案例、标注工具如 Label Studio、定时优化任务、自动上传结果），版本追踪（在 LangFuse Prompt metadata 中记录优化来源、训练数据集、Loss 函数、时间戳，建立版本与优化任务的映射关系，保留完整日志），降级兜底（LangFuse 不可用时降级到本地缓存、优化失败时保留当前生产版本、人工审核机制避免自动上线质量差的版本）。
+
+这种集成特别适合需要领域专用优化（医疗、金融的评估指标）、数据驱动的频繁迭代、跨团队协作（工程师优化、运营标注灰度）、长期维护的生产级系统。不适合数据量极少（<5 个样本）、内容固定不迭代、缺乏标注资源或对优化成本敏感的项目。成本方面，计算主要来自 DSPy 优化阶段（建议先用 light 验证再用 heavy，利用 RAGAS 缓存避免重复），人工需要初始集中投入 20-30 个样本后转为增量模式（每周 5-10 个），托管的 API 调用计费通常可忽略但需考虑网络延迟和降级逻辑。这种集成提供了从"生成优质 Prompt"到"持续演化 Prompt"的完整解决方案。
+
+---
+
 ## 工程决策矩阵
 
 | 决策维度 | 选LangFuse单独使用 | 选RAGAS单独使用 | 选混合方案 |
