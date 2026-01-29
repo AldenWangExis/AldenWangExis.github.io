@@ -2,7 +2,7 @@
 title: DSPy 优化器：RAGAS 中的程序化 Prompt 调优机制
 description: 从算法原理和设计思想角度，剖析 RAGAS 如何利用 DSPy/MIPROv2 实现评估 Prompt 的自动优化，揭示训练信号构造、搜索策略和工程权衡的内部逻辑。
 author: Alden
-date: 2026-01-15 10:00:00 +0800
+date: 2026-01-16 10:00:00 +0800
 categories: [LLM Engineering]
 tags: [RAG, LLM Ops, Best Practice, Agent, Performance]
 pin: false

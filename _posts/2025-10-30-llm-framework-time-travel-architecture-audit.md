@@ -1,5 +1,5 @@
 ---
-title: LLM编排框架的时间旅行能力：架构底层的真实性审计
+title: Agent 编排框架的时间旅行能力：架构底层的真实性审计
 description: 从LangGraph的Checkpoint机制到Dify的节点重试，解析四大主流框架在状态溯源、突变与分叉上的实现差异，揭示"时间旅行"营销话术背后的架构真相。
 author: Alden
 date: 2025-10-30 10:15:00 +0800
