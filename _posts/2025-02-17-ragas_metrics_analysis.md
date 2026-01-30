@@ -2,7 +2,7 @@
 title: RAGAS 指标体系拆解：RAG 质量评估的工程实现
 description: 从 30 余个评估指标出发，拆解 RAGAS 质量评估体系的内部运作机制，揭示检索增强生成系统的性能测量逻辑。
 author: Alden
-date: 2025-02-25 10:00:00 +0800
+date: 2025-02-17 10:00:00 +0800
 categories: [LLM Engineering]
 tags: [RAG, LLM Ops, Performance, Best Practice, Agent]
 pin: false

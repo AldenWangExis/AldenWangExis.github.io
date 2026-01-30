@@ -2,7 +2,7 @@
 title: DSPy 框架工程剖析：从声明式Prompt到自动化优化
 description: 拆解 DSPy 框架的分层架构、十余种优化器的算法原理与适用场景、评估体系设计、模型调用机制、Prompt 自动生成策略及数据持久化方案，揭示 LLM 应用从手工 Prompt 工程到数据驱动优化的范式转变。
 author: Alden
-date: 2025-02-26 14:00:00 +0800
+date: 2025-02-20 14:00:00 +0800
 categories: [LLM Engineering]
 tags: [RAG, LLM Ops, Architecture, Best Practice, Performance]
 pin: false
