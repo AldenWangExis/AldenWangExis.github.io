@@ -1,5 +1,5 @@
 ---
-title: "LangFuse vs RAGAS: Prompt工程方案对比"
+title: LangFuse vs RAGAS: Prompt工程方案对比
 description: 从LLM工程视角剖析两种Prompt方案的定位差异——RAGAS聚焦代码级构建（类型安全、结构化输出），LangFuse聚焦运维级托管（热更新、版本管理），两者互补而非竞争。
 author: Alden
 date: 2026-01-22 14:00:00 +0800
@@ -605,4 +605,12 @@ flowchart TB
 | 非技术人员协作 | No | Yes |
 | 网络依赖 | No | Yes |
 | Trace集成 | 需自行实现 | 原生支持 |
+
+---
+
+## 延伸阅读
+
+- [RAGAS 指标体系拆解：RAG 质量评估的工程实现]({% post_url 2025-02-17-ragas_metrics_analysis %}) - 深入解析 RAGAS 的 30 余个评估指标，揭示检索增强生成系统的性能测量逻辑
+- [DSPy 框架工程剖析：从声明式Prompt到自动化优化]({% post_url 2025-02-20-dspy-framework-architecture %}) - 拆解 DSPy 框架的分层架构、优化器算法原理与 Prompt 自动生成策略
+- [DSPy 优化器：RAGAS 中的程序化 Prompt 调优机制]({% post_url 2025-02-26-dspy-optimizer-in-ragas %}) - 剖析 RAGAS 如何利用 DSPy/MIPROv2 实现评估 Prompt 的自动优化
 
