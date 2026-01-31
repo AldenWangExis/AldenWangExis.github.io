@@ -1,5 +1,5 @@
 ---
-title: LLM 可观测平台的两条路径：Langfuse 与 MLflow 的架构权衡
+title: "LLM 可观测平台的两条路径：Langfuse 与 MLflow 的架构权衡"
 description: 从 Observation 抽象、语义富化、评估闭环到 Prompt 管理，剖析两种可观测系统的设计哲学与工程取舍
 author: Alden
 date: 2026-01-29 23:30:00 +0800
