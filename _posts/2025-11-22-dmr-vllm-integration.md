@@ -3,7 +3,7 @@ title: 当 Docker 开始接管 LLM 部署，Ollama 的护城河还在吗？
 author: Alden
 date: 2025-11-22 22:16:00 +0800
 categories: [LLM Engineering, DevOps]
-tags: [LLM Ops, Docker, VLLM, Ollama]
+tags: [LLM Ops, Docker, vLLM, Ollama]
 description: 深入解析 Docker Model Runner (DMR) 的架构演进，对比 Ollama 的工程差异，探讨 DMR 如何利用 vLLM 集成打造企业级 LLM 基础设施的运维体系。
 image:
   path: https://mmbiz.qpic.cn/mmbiz_jpg/SsFW44YAzM8VuaNvP4dY5s1SnSwWZicsNw4KfVq4gnia8qCof1OM9EwLic93K7dKW0oHgTPraZzVTyJ9TllXVibERg/640

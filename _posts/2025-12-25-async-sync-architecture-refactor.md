@@ -4,7 +4,7 @@ description: 在 FastAPI + Celery 技术栈中，async/sync 边界模糊会引�
 author: Alden
 date: 2025-12-25 10:21:00 +0800
 categories: [Coding Lab]
-tags: [Python, FastAPI, Celery, Asyncio, SQLAlchemy, Architecture, Best Practice]
+tags: [Python, FastAPI, Celery, Async, SQLAlchemy, Architecture, Best Practice]
 pin: false
 mermaid: true
 comments: true
