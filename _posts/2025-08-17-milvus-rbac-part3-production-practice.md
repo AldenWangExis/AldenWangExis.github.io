@@ -3,7 +3,7 @@ title: Milvus 权限管理实战（三）：多租户与生产运维
 description: 介绍 Milvus 多租户权限设计、资源组隔离、最佳实践及常见问题排查
 author: Alden
 date: 2025-08-17 10:00:00 +0800
-categories: [LLM Engineering, Milvus]
+categories: [LLM Engineering]
 tags: [Milvus, RBAC, Vector Database, Python, Multi-Tenancy, Production]
 pin: false
 mermaid: false

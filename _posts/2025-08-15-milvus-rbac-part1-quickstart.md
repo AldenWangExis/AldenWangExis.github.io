@@ -3,7 +3,7 @@ title: Milvus 权限管理实战（一）：从 RDBMS RBAC 到 Milvus
 description: 面向具备传统 RDBMS RBAC 经验的 Python 开发者，介绍 Milvus RBAC 基础概念、认证配置和用户角色管理
 author: Alden
 date: 2025-08-15 10:00:00 +0800
-categories: [LLM Engineering, Milvus]
+categories: [LLM Engineering]
 tags: [Milvus, RBAC, Vector Database, Python, Authentication]
 pin: false
 mermaid: false

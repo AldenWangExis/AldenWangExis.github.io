@@ -3,7 +3,7 @@ title: Milvus 权限管理实战（二）：RBAC 核心机制与权限授予
 description: 深入介绍 Milvus RBAC 四要素模型、56 种细粒度权限、9 个内置权限组及 grant_privilege_v2() API 使用
 author: Alden
 date: 2025-08-16 10:00:00 +0800
-categories: [LLM Engineering, Milvus]
+categories: [LLM Engineering]
 tags: [Milvus, RBAC, Vector Database, Python, Privilege]
 pin: false
 mermaid: false
