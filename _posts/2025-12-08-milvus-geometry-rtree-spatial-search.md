@@ -4,7 +4,7 @@ description: 深入剖析 Milvus 2.6.4 版本引入的 Geometry 数据类型与 
 author: Alden
 date: 2025-12-08 10:21:00 +0800
 categories: [LLM Engineering, Coding Lab]
-tags: [Milvus, vector database, geometry, spatial search, Performance]
+tags: [Milvus, Vector Database, Geometry, Spatial Search, Performance]
 pin: false
 math: true
 mermaid: true

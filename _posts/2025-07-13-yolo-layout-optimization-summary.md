@@ -4,7 +4,7 @@ description: 本文系统阐述了在 PDF 文档翻译流水线中，针对 YOLO
 author: Alden
 date: 2025-07-13 10:00:00 +0800
 categories: [LLM Engineering]
-tags: [yolo, object detection, nms, document layout analysis, post-processing]
+tags: [YOLO, Object Detection, NMS, Document Layout Analysis, Post-Processing]
 pin: false
 math: true
 mermaid: true

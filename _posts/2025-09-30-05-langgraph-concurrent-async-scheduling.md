@@ -4,7 +4,7 @@ description: 解析 LangGraph 并发调度机制,理解 Runner/Executor 的职�
 author: Alden
 date: 2025-09-30 10:00:00 +0800
 categories: [LLM Engineering, Coding Lab]
-tags: [langgraph, Architecture, concurrency, async]
+tags: [LangGraph, Architecture, Concurrency, Async]
 pin: false
 mermaid: true
 comments: true

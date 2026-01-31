@@ -4,7 +4,7 @@ description: 一篇关于 ZeusAI 的论文解读，探讨如何用 AlphaZero 风
 author: Alden
 date: 2025-12-27 10:00:00 +0800
 categories: [LLM Engineering]
-tags: [reinforcement-learning, transformer, mcts, board-game]
+tags: [Reinforcement Learning, Transformer, MCTS, Board Game]
 pin: false
 mermaid: false
 comments: true

@@ -4,7 +4,7 @@ description: 介绍 Milvus 多租户权限设计、资源组隔离、最佳实�
 author: Alden
 date: 2025-08-17 10:00:00 +0800
 categories: [LLM Engineering, Milvus]
-tags: [milvus, rbac, vector database, python, multi-tenancy, production]
+tags: [Milvus, RBAC, Vector Database, Python, Multi-Tenancy, Production]
 pin: false
 mermaid: false
 comments: true

@@ -4,7 +4,7 @@ description: 深入解析 LangGraph 的中断恢复机制,理解 GraphInterrupt 
 author: Alden
 date: 2025-09-30 10:00:00 +0800
 categories: [LLM Engineering, Coding Lab]
-tags: [langgraph, Architecture, interrupt, resume]
+tags: [LangGraph, Architecture, Interrupt, Resume]
 pin: false
 mermaid: true
 comments: true

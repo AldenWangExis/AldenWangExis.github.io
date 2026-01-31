@@ -4,7 +4,7 @@ description: 面向具备传统 RDBMS RBAC 经验的 Python 开发者，介绍 M
 author: Alden
 date: 2025-08-15 10:00:00 +0800
 categories: [LLM Engineering, Milvus]
-tags: [milvus, rbac, vector database, python, authentication]
+tags: [Milvus, RBAC, Vector Database, Python, Authentication]
 pin: false
 mermaid: false
 comments: true

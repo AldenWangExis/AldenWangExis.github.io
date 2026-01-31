@@ -4,7 +4,7 @@ description: 基于 FastAPI + LangGraph 0.3.5 的 InMemoryStore 命名空间设�
 author: Alden
 date: 2025-09-28 10:00:00 +0800
 categories: [LLM Engineering, Coding Lab]
-tags: [langgraph, Architecture, agent, concurrency]
+tags: [LangGraph, Architecture, Agent, Concurrency]
 pin: false
 mermaid: true
 comments: true

@@ -4,7 +4,7 @@ description: 深入介绍 Milvus RBAC 四要素模型、56 种细粒度权限、
 author: Alden
 date: 2025-08-16 10:00:00 +0800
 categories: [LLM Engineering, Milvus]
-tags: [milvus, rbac, vector database, python, privilege]
+tags: [Milvus, RBAC, Vector Database, Python, Privilege]
 pin: false
 mermaid: false
 comments: true

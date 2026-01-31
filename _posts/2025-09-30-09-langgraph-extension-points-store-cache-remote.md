@@ -4,7 +4,7 @@ description: 梳理 LangGraph 高杠杆扩展点的注入位置、运行时可�
 author: Alden
 date: 2025-09-30 10:00:00 +0800
 categories: [LLM Engineering, Coding Lab]
-tags: [langgraph, Architecture, extension, store]
+tags: [LangGraph, Architecture, Extension, Store]
 pin: false
 mermaid: true
 comments: true

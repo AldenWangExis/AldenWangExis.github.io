@@ -4,7 +4,7 @@ description: 解析 conditional edge 的 fresh read 语义、fan-out 的 Send �
 author: Alden
 date: 2025-09-30 10:00:00 +0800
 categories: [LLM Engineering, Coding Lab]
-tags: [langgraph, Architecture, routing, fan-in-out]
+tags: [LangGraph, Architecture, Routing, Fan-In-Out]
 pin: false
 mermaid: true
 comments: true

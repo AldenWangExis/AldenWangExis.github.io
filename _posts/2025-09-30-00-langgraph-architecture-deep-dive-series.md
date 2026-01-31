@@ -4,7 +4,7 @@ description: 基于 LangGraph 1.x 的架构分析系列导引,解析 Pregel 执�
 author: Alden
 date: 2025-09-30 10:00:00 +0800
 categories: [LLM Engineering, Coding Lab]
-tags: [langgraph, Architecture, agent, pregel]
+tags: [LangGraph, Architecture, Agent, Pregel]
 pin: false
 mermaid: true
 comments: true

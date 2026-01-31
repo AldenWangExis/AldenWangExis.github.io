@@ -4,7 +4,7 @@ description: 解析 StateGraph 编译期的图装配流程,理解控制流如何
 author: Alden
 date: 2025-09-30 10:00:00 +0800
 categories: [LLM Engineering, Coding Lab]
-tags: [langgraph, Architecture, compilation, state]
+tags: [LangGraph, Architecture, Compilation, State]
 pin: false
 mermaid: true
 comments: true

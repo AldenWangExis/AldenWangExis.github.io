@@ -4,7 +4,7 @@ description: 深入解析 LangGraph 基于 Pregel BSP 模型的执行机制,理�
 author: Alden
 date: 2025-09-30 10:00:00 +0800
 categories: [LLM Engineering, Coding Lab]
-tags: [langgraph, Architecture, pregel, concurrency]
+tags: [LangGraph, Architecture, Pregel, Concurrency]
 pin: false
 mermaid: true
 comments: true

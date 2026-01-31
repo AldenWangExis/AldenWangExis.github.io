@@ -4,7 +4,7 @@ description: 解析 LangGraph Channel 的可见性控制、聚合策略和屏障
 author: Alden
 date: 2025-09-30 10:00:00 +0800
 categories: [LLM Engineering, Coding Lab]
-tags: [langgraph, Architecture, consistency, channel]
+tags: [LangGraph, Architecture, Consistency, Channel]
 pin: false
 mermaid: true
 comments: true

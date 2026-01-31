@@ -4,7 +4,7 @@ description: 解析 LangGraph 子图的发现与挂载机制、namespace 的层�
 author: Alden
 date: 2025-09-30 10:00:00 +0800
 categories: [LLM Engineering, Coding Lab]
-tags: [langgraph, Architecture, subgraph, namespace]
+tags: [LangGraph, Architecture, Subgraph, Namespace]
 pin: false
 mermaid: true
 comments: true
