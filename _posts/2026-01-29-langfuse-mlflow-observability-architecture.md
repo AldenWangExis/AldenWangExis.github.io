@@ -4,7 +4,7 @@ description: 从 Observation 抽象、语义富化、评估闭环到 Prompt 管�
 author: Alden
 date: 2026-01-29 23:30:00 +0800
 categories: [LLM Engineering]
-tags: [LLM Ops, Architecture, Best Practice, MLFlow]
+tags: [LLM Ops, Architecture, Best Practice, MLflow]
 pin: false
 mermaid: true
 math: false

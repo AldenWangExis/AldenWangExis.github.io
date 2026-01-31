@@ -279,7 +279,7 @@ Linux 网络配置涉及多个层级的工具，各自作用域和优先级不�
 graph TB
     subgraph 应用层
         App[应用程序]
-        Hosts[/etc/hosts]
+        Hosts["/etc/hosts"]
     end
     
     subgraph 用户空间
