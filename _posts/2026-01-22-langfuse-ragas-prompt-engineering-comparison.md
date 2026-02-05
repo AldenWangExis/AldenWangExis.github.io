@@ -4,7 +4,7 @@ description: 从LLM工程视角剖析两种Prompt方案的定位差异——RAGA
 author: Alden
 date: 2026-01-22 14:00:00 +0800
 categories: [LLM Engineering]
-tags: [RAG, LLM Ops, Architecture, Best Practice, Evaluation]
+tags: [RAG, LLM Ops, Architecture, Best Practice, Evaluation, Observation]
 mermaid: true
 ---
 
