@@ -56,9 +56,7 @@ graph LR
 ### 网络架构演进
 
 > **关于混合网络的坑**  
-> 早期部署时我们混用了 Compose 内部网络和宿主机网络。这导致容器需要通过公网 IP 访问宿主机服务时，会触发 NAT 回环问题（详见 [Azure VM NAT 回环问题排查]({% 2026-01-20-azure-vm-nat-hairpin-minio-access.md %})。
-[Pregel 执行模型与步进调度]({% post_url 2025-09-30-01-langgraph-pregel-execution-model %})  
-
+> 早期部署时我们混用了 Compose 内部网络和宿主机网络。这导致容器需要通过公网 IP 访问宿主机服务时，会触发 NAT 回环问题（详见 [Azure VM NAT 回环问题排查]({% post_url 2026-01-20-azure-vm-nat-hairpin-minio-access %})）。
 > 
 > 后来我们统一改为 Compose 内部通信（通过服务名解析），才消除了这个复杂性。
 {: .prompt-info }

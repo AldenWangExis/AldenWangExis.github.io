@@ -424,6 +424,7 @@ sequenceDiagram
 ### 6.1 LLM-as-Judge 的通用模板
 
 使用 LLM 作为裁判评估输出质量:
+{% raw %}
 ```python
 async def llm_judge_evaluator(*, input, output, **kwargs):
     """使用 GPT-4 评估输出质量"""
@@ -444,6 +445,7 @@ async def llm_judge_evaluator(*, input, output, **kwargs):
     response = await openai.ChatCompletion.acreate(
         model="gpt-4",
         messages=[{"role": "user", "content": judge_prompt}],
+{% endraw %}
         temperature=0.3  # 降低随机性,提高一致性
     )
     

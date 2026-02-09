@@ -145,6 +145,7 @@ langfuse.api.prompts.update(
 ### 2.3 变量替换的模板引擎
 
 Prompt 中的变量使用 `{{variable}}` 语法标记:
+{% raw %}
 ```python
 # Text Prompt 示例
 template = "Summarize the following text: {{text}}. Focus on {{aspect}}."
@@ -155,13 +156,16 @@ messages = [
     {"role": "user", "content": "My question is: {{question}}"}
 ]
 ```
+{% endraw %}
 
 编译时传入变量字典:
+{% raw %}
 ```python
 prompt = langfuse.get_prompt("summarizer")
 compiled = prompt.compile(text="Long article...", aspect="key points")
 # 结果: "Summarize the following text: Long article.... Focus on key points."
 ```
+{% endraw %}
 
 **模板引擎的实现逻辑**:
 1. 使用正则表达式扫描 `{{...}}` 模式
@@ -418,6 +422,7 @@ sequenceDiagram
 
 虽然 LangFuse 内置的模板引擎仅支持简单的变量替换,但可通过继承扩展:
 
+{% raw %}
 ```python
 from langfuse.model import TemplateParser
 
@@ -442,6 +447,7 @@ class AdvancedTemplateParser(TemplateParser):
 
 # 使用自定义解析器
 prompt = langfuse.get_prompt("assistant")
+{% endraw %}
 prompt._parser = AdvancedTemplateParser  # 替换解析器
 compiled = prompt.compile(show_advanced=True, ...)
 ```
@@ -600,12 +606,14 @@ LangFuse 不验证 `config` 的键名,错误参数会被静默忽略,直到 LLM 
 ### 7.5 变量未定义的静默失败
 
 **风险描述**。模板编译时,未定义的变量被保留为 `{{var}}` 而非抛出异常:
+{% raw %}
 ```python
 template = "Hello, {{name}}! Your score is {{score}}."
 compiled = compile_template(template, {"name": "Alice"})
 # 结果: "Hello, Alice! Your score is {{score}}."
 # score 未定义,但无异常
 ```
+{% endraw %}
 
 这在生产环境中可能导致"半编译"的 Prompt 发送给 LLM,产生混乱的输出。
 
