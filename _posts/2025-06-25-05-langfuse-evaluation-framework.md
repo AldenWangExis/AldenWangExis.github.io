@@ -445,7 +445,6 @@ async def llm_judge_evaluator(*, input, output, **kwargs):
     response = await openai.ChatCompletion.acreate(
         model="gpt-4",
         messages=[{"role": "user", "content": judge_prompt}],
-{% endraw %}
         temperature=0.3  # 降低随机性,提高一致性
     )
     
@@ -457,6 +456,7 @@ async def llm_judge_evaluator(*, input, output, **kwargs):
         metadata={"judge_model": "gpt-4", "judge_cost": response.usage.total_tokens * 0.00003}
     )
 ```
+{% endraw %}
 
 **成本控制**:LLM-as-Judge 的成本通常为原始 LLM 调用的 10-30%。若评估 1000 条输出,每次评估消耗 500 tokens($0.015),总成本为 $15。需权衡评估精度与成本。
 

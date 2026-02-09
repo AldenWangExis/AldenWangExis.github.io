@@ -1,4 +1,4 @@
-
+---
 title: mxd-AI 部署：网络代理问题排障与经验复盘
 description: 单机 Docker Compose 部署中，从"宿主机能通、容器不通"到"代理配置优先级混乱"的完整踩坑记录。包含错误假设、失败尝试与最终解决方案。
 author: Alden
