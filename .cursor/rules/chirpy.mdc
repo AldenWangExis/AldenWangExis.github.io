@@ -43,6 +43,7 @@ categories 分类推荐：
 - LLM Engineering(LLM 工程): 聚焦 LLM 的具体应用架构、推理引擎、Agent 开发、RAG 等；
 - DevOps (云原生与运维): 聚焦基础设施、容器化、网络加速、部署流程；
 - Coding Lab (代码实验室): 具体的编程实战、逆向工程、工具使用教程。
+- GxP (Good Practice): 与医药合规相关的。
 
 tags 参考推荐
 [AI Coding, API, Agent, Agno, Anthropic, Architecture, Async, Authentication, Azure, BSP, Best Practice, Board Game, Book Review, CAMEL, CDN, CI/CD, CLI, Celery, Channel, Checkpoint, Clustering, Cognition, Compilation, Complexity, Concurrency, Consistency, Container, Crawler, Data Gravity, Data Quality, Declarative, Deployment, Dify, Distributed System, Docker, Document Layout Analysis, EdgeOne, Embedding, Entropy, Evaluation, Extension, Fan-In-Out, FastAPI, Geometry, GitHub, Graph Computing, Inference, Infra, Interrupt, LLM, LLM Ops, LangGraph, Language, MCP, MCTS, MLflow, MapReduce, Methodology, Milvus, Multi-Tenancy, NAT, NLU, NMS, Namespace, Network, OAuth, Object Detection, Ollama, Performance, Philosophy, Post-Processing, Pregel, Privilege, Production, Pydantic, Python, RAG, RBAC, Recovery, Reinforcement Learning, Resume, Reverse Engineering, Routing, Rust, SDD, SQLAlchemy, SSE, Snowflake, Spatial Search, State Management, Store, Structure, Subgraph, Time Travel, Transformer, VLLM, Vector Database, Vercel, Vibe Coding, Vue, VuePress, YOLO, iptables, llama.cpp]
