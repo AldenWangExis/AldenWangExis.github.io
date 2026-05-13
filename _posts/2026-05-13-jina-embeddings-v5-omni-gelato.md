@@ -9,11 +9,13 @@ pin: false
 comments: true
 ---
 
+![](https://jina.ai/blog-banner/jina-embeddings-v5-omni-multimodal-embeddings-for-text-image-audio-and-video.gif)
+
 Jina AI 刚刚发布了 jina-embeddings-v5-omni，分 nano（0.95B）和 small（1.57B）两档，官方叫它全模态向量小模型。一个模型把文本、图像、音频、视频都收进同一条向量里，文本侧与 v5-text 逐字节一致，已有索引一行不用改。
 
 背后的方法叫 GELATO：把预训练好的视觉、音频编码器和文本嵌入模型一起冻结，中间只训一层 projector 把模态特征拉进文本几何里。nano 和 small 这两档接的是完全不同的文本骨干和不同架构，能同时跑通，说明这套方子不止能延长 v5-text——理论上谁的文本嵌入模型都能照此加上视觉和音频。
 
-![Architecture of jina-embeddings-v5-omni](https://arxiv.org/html/2605.08384v2/figures/openai_image_2/architecture.png)
+![Architecture of jina-embeddings-v5-omni](https://cms.jina.ai/content/images/size/w1000/2026/05/architecture.png)
 
 - v5-omni-small 在四模态平均分上拿到 53.93，参数量只有 LCO-Omni-7B（8.93B）的 1/5.7，分数差 0.50 分。
 - v5-omni-nano 0.95B，文档检索 ViDoRe 拿到 70.05，同量级的 LanguageBind（1.14B）只有 37.33；nano 的全模态平均分比它高出 8.9 分。
@@ -274,7 +276,8 @@ if __name__ == "__main__":
 
 - HuggingFace：https://huggingface.co/collections/jinaai/jina-embeddings-v5-omni
 - ModelScope 魔搭：https://modelscope.cn/organization/jinaai
-- 技术报告：https://arxiv.org/abs/2605.08384
+- 技术报告：https://jina.ai/news/jina-embeddings-v5-omni-multimodal-embeddings-for-text-image-audio-and-video/
+- 论文地址：https://arxiv.org/abs/2605.08384
 - Jina API：https://jina.ai/embeddings
 - Zilliz Cloud serverless 实例： https://milvus.io/docs/install-overview.md
 
