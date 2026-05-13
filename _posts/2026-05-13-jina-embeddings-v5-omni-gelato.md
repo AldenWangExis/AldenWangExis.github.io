@@ -120,32 +120,37 @@ COLLECTION_NAME = "jina_omni_nano_demo"
 
 
 # ── Helper: Jina v5-omni-nano embedding ─────────────────────────────────
+_JINA_HEADERS = {
+    "Content-Type": "application/json",
+    "Authorization": f"Bearer {JINA_API_KEY}",
+}
+
+
 def jina_embed(inputs: list[dict[str, str]], task: str) -> list[list[float]]:
-    """Embed inputs via Jina API.
-
-    Args:
-        inputs: items like {"text": "..."} or {"image": "<url|base64>"}.
-        task: "retrieval.passage" for indexing, "retrieval.query" for search.
-
-    Returns:
-        768-d L2-normalized vectors aligned with `inputs` order.
-    """
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {JINA_API_KEY}",
-    }
+    """Embed text/image/audio/video; one input -> one 768-d vector."""
     payload = {
         "model": JINA_MODEL,
         "task": task,
         "normalized": True,
         "input": inputs,
     }
-    resp = requests.post(JINA_API_URL, headers=headers, data=json.dumps(payload), timeout=60)
+    resp = requests.post(JINA_API_URL, headers=_JINA_HEADERS, data=json.dumps(payload), timeout=60)
     resp.raise_for_status()
-    data = resp.json()["data"]
-    # sort by index to keep output aligned with input order
-    data_sorted = sorted(data, key=lambda x: x["index"])
-    return [item["embedding"] for item in data_sorted]
+    data = sorted(resp.json()["data"], key=lambda x: x["index"])
+    return [item["embedding"] for item in data]
+
+
+def jina_embed_pdf(pdf_url: str, task: str) -> list[list[float]]:
+    """Embed a single PDF URL; one PDF in -> N server-chunked vectors out."""
+    payload = {
+        "model": JINA_MODEL,
+        "task": task,
+        "normalized": True,
+        "input": {"pdf": pdf_url},
+    }
+    resp = requests.post(JINA_API_URL, headers=_JINA_HEADERS, data=json.dumps(payload), timeout=120)
+    resp.raise_for_status()
+    return [item["embedding"] for item in resp.json()["data"]]
 
 
 # ── 1. Create collection ────────────────────────────────────────────────
@@ -162,7 +167,6 @@ def build_collection(client: MilvusClient) -> None:
     schema.add_field("vector", DataType.FLOAT_VECTOR, dim=EMBED_DIM)
 
     index_params = client.prepare_index_params()
-    # AUTOINDEX is recommended on Zilliz Serverless; COSINE == IP for normalized vectors
     index_params.add_index(
         field_name="vector",
         index_type="AUTOINDEX",
@@ -178,50 +182,67 @@ def build_collection(client: MilvusClient) -> None:
     logger.info("created collection %s (dim=%d, metric=COSINE)", COLLECTION_NAME, EMBED_DIM)
 
 
-# ── 2. Demo corpus: faithful to test.py ─────────────────────────────────
-TEXT_ITEMS: list[str] = [
-    "A beautiful sunset over the beach",
-    "Un beau coucher de soleil sur la plage",
-    "海滩上美丽的日落",
-    "浜辺に沈む美しい夕日",
+# ── 2. Demo corpus: regular modalities + PDFs separately ───────────────
+CORPUS: dict[str, list[dict[str, str]]] = {
+    "text": [
+        {"text": "A beautiful sunset over the beach"},
+        {"text": "Un beau coucher de soleil sur la plage"},
+        {"text": "海滩上美丽的日落"},
+        {"text": "浜辺に沈む美しい夕日"},
+    ],
+    "image": [
+        {"image": "https://i.ibb.co/nQNGqL0/beach1.jpg"},
+        {"image": "https://i.ibb.co/r5w8hG8/beach2.jpg"},
+        {
+            "image": (
+                "iVBORw0KGgoAAAANSUhEUgAAABwAAAA4CAIAAABhUg/jAAAAMklEQVR4nO3MQREAMAg"
+                "AoLkoFreTiSzhy4MARGe9bX99lEqlUqlUKpVKpVKpVCqVHksHaBwCA2cPf0cAAAAA"
+                "SUVORK5CYII="
+            )
+        },
+    ],
+    "audio": [
+        {"audio": "https://storage.googleapis.com/jina-public/example-audio-clip.wav"},
+    ],
+    "video": [
+        {"video": "https://storage.googleapis.com/jina-public/example-video-clip.mp4"},
+    ],
+}
+
+PDF_DOCUMENTS: list[str] = [
+    "https://arxiv.org/pdf/2506.18902",
 ]
 
-IMAGE_ITEMS: list[dict[str, str]] = [
-    {"image": "https://i.ibb.co/nQNGqL0/beach1.jpg"},
-    {"image": "https://i.ibb.co/r5w8hG8/beach2.jpg"},
-    {
-        "image": (
-            "iVBORw0KGgoAAAANSUhEUgAAABwAAAA4CAIAAABhUg/jAAAAMklEQVR4nO3MQREAMAg"
-            "AoLkoFreTiSzhy4MARGe9bX99lEqlUqlUKpVKpVKpVCqVHksHaBwCA2cPf0cAAAAA"
-            "SUVORK5CYII="
-        )
-    },
-]
+
+def _readable_content(payload: dict[str, str]) -> str:
+    """Display-friendly content; truncate base64 blobs, keep URLs/texts as-is."""
+    key, value = next(iter(payload.items()))
+    if key == "text" or value.startswith("http"):
+        return value
+    return f"base64:{value[:40]}..."
 
 
-# ── 3. Insert ───────────────────────────────────────────────────────────
+# ── 3. Insert: one path per API contract, all into the same 768-d field ─
 def insert_corpus(client: MilvusClient) -> None:
-    """Embed texts and images as retrieval.passage into the shared space."""
-    text_inputs = [{"text": t} for t in TEXT_ITEMS]
-    text_vectors = jina_embed(text_inputs, task="retrieval.passage")
-    text_rows = [
-        {"content": t, "modality": "text", "vector": v}
-        for t, v in zip(TEXT_ITEMS, text_vectors, strict=True)
-    ]
-    client.insert(COLLECTION_NAME, text_rows)
-    logger.info("inserted %d text passages", len(text_rows))
+    """Embed every modality as retrieval.passage into the shared space."""
+    for modality, items in CORPUS.items():
+        vectors = jina_embed(items, task="retrieval.passage")
+        rows = [
+            {"content": _readable_content(item), "modality": modality, "vector": v}
+            for item, v in zip(items, vectors, strict=True)
+        ]
+        client.insert(COLLECTION_NAME, rows)
+        logger.info("inserted %d %s items", len(rows), modality)
 
-    # store URL as-is; truncate base64 in `content` for readable display
-    image_vectors = jina_embed(IMAGE_ITEMS, task="retrieval.passage")
-    image_rows = []
-    for item, vec in zip(IMAGE_ITEMS, image_vectors, strict=True):
-        raw = item["image"]
-        content = raw if raw.startswith("http") else f"base64:{raw[:40]}..."
-        image_rows.append({"content": content, "modality": "image", "vector": vec})
-    client.insert(COLLECTION_NAME, image_rows)
-    logger.info("inserted %d image passages", len(image_rows))
+    for pdf_url in PDF_DOCUMENTS:
+        chunks = jina_embed_pdf(pdf_url, task="retrieval.passage")
+        rows = [
+            {"content": f"{pdf_url}#chunk{i}", "modality": "pdf", "vector": v}
+            for i, v in enumerate(chunks)
+        ]
+        client.insert(COLLECTION_NAME, rows)
+        logger.info("inserted %d pdf chunks for %s", len(rows), pdf_url)
 
-    # flush so subsequent search sees the new rows on Zilliz Serverless
     client.flush(COLLECTION_NAME)
 
 
