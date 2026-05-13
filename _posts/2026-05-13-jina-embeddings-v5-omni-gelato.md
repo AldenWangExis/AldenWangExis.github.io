@@ -91,7 +91,7 @@ Jina AI 刚刚发布了 jina-embeddings-v5-omni，分 nano（0.95B）和 small�
 
 ## 04 快速在 Milvus 中使用 Jina Embedding
 
-下面这段代码可以直接复制下来跑通。用 v5-omni-nano 把一组文本和图像统一编码进同一个 Milvus collection，然后用文本 query 跨模态召回。环境只要 `pymilvus`、`requests`、一个 [Zilliz Cloud serverless 实例](https://milvus.io/docs/install-overview.md)，以及一个 [Jina API key](https://jina.ai/api-dashboard/embedding)。
+下面这段代码可以直接复制下来跑通。用 v5-omni-nano 把文本、图像、音频、视频、PDF 五种输入统一编码进同一个 Milvus collection，再用文本 query 跨模态召回。环境只要 `pymilvus`、`requests`、一个 [Zilliz Cloud serverless 实例](https://milvus.io/docs/install-overview.md)，以及一个 [Jina API key](https://jina.ai/api-dashboard/embedding)。
 
 ```python
 
