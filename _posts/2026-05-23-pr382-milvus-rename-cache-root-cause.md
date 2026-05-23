@@ -1,5 +1,5 @@
 ---
-title: "PR #382 Milvus Rename Cache 问题 RCA"
+title: "当缓存冒充事实来源：Milvus Rename 的一次复盘"
 description: 复盘 Milvus hybrid embedding storage 中 rename_collection_embeddings 误信进程内缓存导致 no-op、partial cache 报错与潜在数据丢失的根因、修复和预防动作。
 author: Alden
 date: 2026-05-23 21:08:42 +0800
