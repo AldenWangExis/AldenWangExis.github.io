@@ -108,5 +108,5 @@ Vector Lakebase 的辨识度也在这里。它把湖原生存储、高性能向�
 
 ## 参考
 
-- [Snowflake 的架构革命：数据引力时代的企业级 AI 重构](/2025/11/19/snowflake-architecture-revolution/)
+- [Snowflake 的架构革命：数据引力时代的企业级 AI 重构](/posts/snowflake-architecture-revolution/)
 - [官宣开源｜Milvus 3.0 正式发布](https://mp.weixin.qq.com/s/MQvZRsT6vq1MfToEKIt6ag)
