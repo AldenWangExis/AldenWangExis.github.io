@@ -6,7 +6,7 @@ date: 2026-07-28 18:38:00 +0800
 categories: [LLM Engineering]
 tags: [Agent, Evaluation, LLM, Best Practice]
 image:
-  path: /assets/img/posts/skill-eval-systematically/skill-eval-01.jpg
+  path: skill-eval-01.jpg
   alt: Agent Skill 评测主题封面
 media_subpath: /assets/img/posts/skill-eval-systematically
 mermaid: true
